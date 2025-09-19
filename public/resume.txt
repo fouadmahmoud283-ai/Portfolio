@@ -1,0 +1,37 @@
+# Fouad Mahmoud - Resume
+
+**AI & Agentic Systems Engineer**  
+Email: fouadmahmoud281@gmail.com  
+GitHub: https://github.com/fouadmahmoud281  
+Portfolio: https://fouadmahmoud-portfolio.vercel.app
+
+## Professional Summary
+Innovative AI & Agentic Systems Engineer with expertise in building autonomous AI systems using LangChain, LangGraph, and cutting-edge LLMs. Currently developing production-level applications at Syntera Marketplace while pursuing studies in Mechatronics & Robotics Engineering.
+
+## Experience
+
+### AI & Agentic Systems Engineer | Syntera Marketplace (Current)
+- Lead engineer on Syntera Code Generation & Marketplace products
+- Architect multi-agent AI systems using LangChain & LangGraph
+- Build autonomous workflows with LLMs for complex tasks
+- Develop data pipelines and vector database solutions
+
+### AI & Data Science Instructor (1.5 Years)
+- Taught fundamentals of robotics, AI, and data science
+- Designed curriculum and hands-on projects
+- Mentored 50+ students on real-world AI applications
+- Conducted workshops on Python, ML, and AI ethics
+
+## Education
+**Mechatronics & Robotics Engineering** (Current)
+- Focus on intelligent systems and AI-hardware integration
+
+## Technical Skills
+- **AI/ML**: LangChain, LangGraph, LangSmith, OpenAI API, Hugging Face
+- **Programming**: Python, JavaScript/TypeScript, FastAPI, Flask
+- **Tools**: Docker, AWS, MongoDB, Redis, Git, MLOps
+- **Specializations**: Multi-agent systems, Vector databases, Agentic AI
+
+## Featured Projects
+1. **Syntera Code Generation** - Production agentic system for autonomous software development
+2. **Syntera Marketplace** - AI/ML tools marketplace with intelligent search and deployment
