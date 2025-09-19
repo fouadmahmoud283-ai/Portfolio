@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Heart, Github, Linkedin, Mail, FileText, ArrowUp } from 'lucide-react';
+import { Github, Linkedin, Mail, FileText, ArrowUp } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -81,7 +81,7 @@ const Footer = () => {
             </div>
 
             <blockquote className="text-sm text-gray-400 italic border-l-2 border-blue-500 pl-4">
-              "Innovative solutions require dumb mistakes" 💡
+              &ldquo;Innovative solutions require dumb mistakes&rdquo; 💡
             </blockquote>
           </motion.div>
 

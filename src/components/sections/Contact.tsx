@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Phone, Github, Linkedin, FileText, Send, MessageCircle, Calendar, Download, Bot, Settings, Cpu, Lightbulb } from 'lucide-react';
+import { Mail, Github, Linkedin, FileText, Send, MessageCircle, Calendar, Download, Bot, Settings, Cpu, Lightbulb } from 'lucide-react';
 import Section from '../ui/Section';
 
 const Contact = () => {
@@ -117,13 +117,13 @@ const Contact = () => {
             Get In Touch
           </span>
           <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-6">
-            <span className="gradient-text">Let's Build</span>
+            <span className="gradient-text">Let&apos;s Build</span>
             <br />
             <span className="text-white">Something Amazing</span>
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Ready to collaborate on your next AI project? I'm always excited to work on 
-            innovative solutions that push the boundaries of what's possible.
+            Ready to collaborate on your next AI project? I&apos;m always excited to work on 
+            innovative solutions that push the boundaries of what&apos;s possible.
           </p>
         </motion.div>
 
@@ -177,7 +177,7 @@ const Contact = () => {
             >
               <h4 className="text-lg font-semibold text-white mb-6">Quick Actions</h4>
               <div className="space-y-4">
-                {quickActions.map((action, index) => (
+                {quickActions.map((action) => (
                   <motion.button
                     key={action.title}
                     onClick={action.href === '#projects' ? scrollToProjects : undefined}
@@ -210,7 +210,7 @@ const Contact = () => {
           >
             <h3 className="text-2xl font-bold text-white mb-8">Collaboration Areas</h3>
             <p className="text-gray-300 mb-8 leading-relaxed">
-              I'm passionate about working on projects that involve cutting-edge AI technologies 
+              I&apos;m passionate about working on projects that involve cutting-edge AI technologies 
               and real-world applications. Here are areas where I can add the most value:
             </p>
 
@@ -259,8 +259,8 @@ const Contact = () => {
         >
           <h3 className="text-3xl font-bold text-white mb-4">Ready to Start Your AI Project?</h3>
           <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Whether you're looking to implement agentic systems, optimize your ML workflows, 
-            or integrate AI into your existing products, I'm here to help bring your vision to life.
+            Whether you&apos;re looking to implement agentic systems, optimize your ML workflows, 
+            or integrate AI into your existing products, I&apos;m here to help bring your vision to life.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -293,7 +293,7 @@ const Contact = () => {
             viewport={{ once: true }}
             className="mt-8 text-gray-400 text-sm"
           >
-            <p>"Innovative solutions require dumb mistakes" - Let's make them together! 💡</p>
+            <p>&ldquo;Innovative solutions require dumb mistakes&rdquo; - Let&apos;s make them together! 💡</p>
           </motion.div>
         </motion.div>
       </div>

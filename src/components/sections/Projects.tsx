@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, Star, Zap, Bot, ShoppingCart, Users, Code, Brain, Database, GraduationCap, TrendingUp } from 'lucide-react';
+import { ExternalLink, Github, Star, Zap, Bot, ShoppingCart, Brain, Database, GraduationCap, TrendingUp } from 'lucide-react';
 import Section from '../ui/Section';
 
 const Projects = () => {

@@ -105,7 +105,7 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="mb-6"
           >
-            <span className="text-lg text-gray-400 font-mono">Hello, I'm</span>
+            <span className="text-lg text-gray-400 font-mono">Hello, I&apos;m</span>
           </motion.div>
 
           {/* Name */}
@@ -143,7 +143,7 @@ const Hero = () => {
             className="mb-8"
           >
             <blockquote className="text-lg text-gray-300 italic border-l-4 border-blue-500 pl-4">
-              "Innovative solutions require dumb mistakes" 💡
+              &ldquo;Innovative solutions require dumb mistakes&rdquo; 💡
             </blockquote>
           </motion.div>
 
@@ -186,7 +186,7 @@ const Hero = () => {
               }}
               className="btn-secondary px-8 py-3 rounded-lg font-semibold text-white transition-all duration-300 text-center"
             >
-              Let's Talk
+              Let&apos;s Talk
             </a>
           </motion.div>
 
@@ -197,7 +197,7 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 1.6 }}
             className="flex justify-center lg:justify-start space-x-6"
           >
-            {socialLinks.map((social, index) => (
+            {socialLinks.map((social) => (
               <motion.a
                 key={social.label}
                 href={social.href}

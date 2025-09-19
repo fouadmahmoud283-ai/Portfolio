@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Bot, Database, Code, Cpu, Brain, Zap, Cloud, Settings } from 'lucide-react';
+import { Bot, Database, Code, Cpu, Brain, Settings } from 'lucide-react';
 import Section from '../ui/Section';
 
 const Skills = () => {

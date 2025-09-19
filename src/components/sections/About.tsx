@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Briefcase, GraduationCap, MapPin, Users, Zap, Target, Bot, Brain, Cpu, Network } from 'lucide-react';
+import { Bot, Brain, Cpu, Network } from 'lucide-react';
 import Section from '../ui/Section';
 
 const About = () => {
@@ -80,7 +80,7 @@ const About = () => {
             className="space-y-6 text-gray-300 leading-relaxed"
           >
             <p className="text-lg">
-              I'm an <span className="text-blue-400 font-semibold">AI & Agentic Systems Engineer</span> at{' '}
+              I&apos;m an <span className="text-blue-400 font-semibold">AI & Agentic Systems Engineer</span> at{' '}
               <span className="text-teal-400 font-semibold">Syntera Marketplace</span>, specializing in 
               designing and building <span className="text-purple-400 font-semibold">autonomous AI agents</span> that can 
               perceive, reason, plan, and act to solve complex real-world problems.
@@ -96,7 +96,7 @@ const About = () => {
 
             <p>
               Beyond traditional AI development, I focus on{' '}
-              <span className="text-orange-400 font-semibold">agentic intelligence</span> - systems that don't 
+              <span className="text-orange-400 font-semibold">agentic intelligence</span> - systems that don&apos;t 
               just process data but actively engage with their environment, learn from interactions, and 
               continuously improve their performance. My background in{' '}
               <span className="text-teal-400 font-semibold">Mechatronics & Robotics</span> brings a unique 
@@ -104,7 +104,7 @@ const About = () => {
             </p>
 
             <p>
-              I've successfully deployed <span className="text-yellow-400 font-semibold">4+ production agentic systems</span> 
+              I&apos;ve successfully deployed <span className="text-yellow-400 font-semibold">4+ production agentic systems</span> 
               including automated code generation platforms, intelligent educational assistants, and financial 
               forecasting agents. Each system demonstrates the power of{' '}
               <span className="text-red-400 font-semibold">autonomous decision-making</span> and{' '}
@@ -184,9 +184,9 @@ const About = () => {
           >
             <h3 className="text-xl font-semibold text-white mb-3">Agentic Philosophy</h3>
             <blockquote className="text-gray-300 italic text-lg leading-relaxed">
-              "True agentic intelligence emerges when systems can not just respond to prompts, 
+              &ldquo;True agentic intelligence emerges when systems can not just respond to prompts, 
               but actively pursue goals, adapt to changing environments, and collaborate with other 
-              agents to achieve outcomes that exceed the sum of their individual capabilities."
+              agents to achieve outcomes that exceed the sum of their individual capabilities.&rdquo;
             </blockquote>
           </motion.div>
         </motion.div>
