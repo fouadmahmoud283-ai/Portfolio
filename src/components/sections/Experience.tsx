@@ -9,7 +9,7 @@ const Experience = () => {
     {
       id: 1,
       title: 'AI & Agentic Systems Engineer',
-      company: 'Syntera Marketplace',
+      company: 'Obelion.Ai',
       location: 'Remote',
       period: 'Present',
       type: 'Full-time',

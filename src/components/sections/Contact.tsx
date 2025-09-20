@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion';
 import { Mail, Github, Linkedin, FileText, Send, MessageCircle, Calendar, Download, Bot, Settings, Cpu, Lightbulb } from 'lucide-react';
 import Section from '../ui/Section';
+import ResumeButton from '../ui/ResumeButton';
+import { handleResumeAction } from '@/utils/resumeUtils';
 
 const Contact = () => {
   const contactInfo = [
@@ -34,9 +36,10 @@ const Contact = () => {
       icon: FileText,
       title: 'Resume',
       value: 'Download CV',
-      href: '/resume.pdf',
+      href: '#',
       color: 'text-green-400',
-      description: 'Detailed professional background'
+      description: 'Detailed professional background',
+      action: 'resume'
     }
   ];
 
@@ -92,9 +95,10 @@ const Contact = () => {
       title: 'Download Resume',
       description: 'Get a detailed overview of my experience',
       icon: Download,
-      href: '/resume.pdf',
+      href: '#',
       color: 'text-green-400',
-      action: 'Download'
+      action: 'Download',
+      type: 'resume'
     }
   ];
 
@@ -142,17 +146,21 @@ const Contact = () => {
 
             <div className="space-y-6">
               {contactInfo.map((contact, index) => (
-                <motion.a
+                <motion.button
                   key={contact.title}
-                  href={contact.href}
-                  target={contact.href.startsWith('http') ? '_blank' : '_self'}
-                  rel={contact.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  onClick={() => {
+                    if (contact.action === 'resume') {
+                      handleResumeAction('download');
+                    } else {
+                      window.open(contact.href, contact.href.startsWith('http') ? '_blank' : '_self');
+                    }
+                  }}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
                   whileHover={{ scale: 1.02, x: 10 }}
-                  className="flex items-center space-x-4 p-6 glass-dark rounded-xl hover:bg-white/10 transition-all duration-300 group"
+                  className="flex items-center space-x-4 p-6 glass-dark rounded-xl hover:bg-white/10 transition-all duration-300 group cursor-pointer"
                 >
                   <div className={`p-3 rounded-lg ${contact.color} bg-white/10 group-hover:scale-110 transition-transform duration-300`}>
                     <contact.icon size={24} />
@@ -163,7 +171,7 @@ const Contact = () => {
                     <p className="text-gray-400 text-sm">{contact.description}</p>
                   </div>
                   <Send className="w-5 h-5 text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
-                </motion.a>
+                </motion.button>
               ))}
             </div>
 
@@ -180,7 +188,15 @@ const Contact = () => {
                 {quickActions.map((action) => (
                   <motion.button
                     key={action.title}
-                    onClick={action.href === '#projects' ? scrollToProjects : undefined}
+                    onClick={() => {
+                      if (action.type === 'resume') {
+                        handleResumeAction('download');
+                      } else if (action.href === '#projects') {
+                        scrollToProjects();
+                      } else {
+                        window.open(action.href, '_blank');
+                      }
+                    }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full flex items-center justify-between p-4 glass border border-gray-600 rounded-lg hover:border-gray-400 transition-all duration-300 group"

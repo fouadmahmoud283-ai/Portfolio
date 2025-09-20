@@ -14,7 +14,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Fouad Mahmoud - AI & Agentic Systems Engineer",
-  description: "AI & Agentic Systems Engineer at Syntera Marketplace. Specializing in autonomous AI systems, LangChain, LangGraph, and multi-agent architectures. Mechatronics & Robotics Engineering Student.",
+  description: "AI & Agentic Systems Engineer at Obelion.Ai. Specializing in autonomous AI systems, LangChain, LangGraph, and multi-agent architectures. Mechatronics & Robotics Engineering Student.",
   keywords: [
     "AI Engineer",
     "Agentic Systems",

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Github, Linkedin, Mail, FileText } from 'lucide-react';
+import { handleResumeAction } from '@/utils/resumeUtils';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,25 +33,29 @@ const Navigation = () => {
       href: 'https://github.com/fouadmahmoud281', 
       icon: Github, 
       label: 'GitHub',
-      color: 'hover:text-gray-300'
+      color: 'hover:text-gray-300',
+      action: 'link'
     },
     { 
       href: 'https://www.linkedin.com/in/fouad-mahmoud-2832003/', 
       icon: Linkedin, 
       label: 'LinkedIn',
-      color: 'hover:text-blue-400'
+      color: 'hover:text-blue-400',
+      action: 'link'
     },
     { 
       href: 'mailto:fouadmahmoud281@gmail.com', 
       icon: Mail, 
       label: 'Email',
-      color: 'hover:text-red-400'
+      color: 'hover:text-red-400',
+      action: 'link'
     },
     { 
-      href: '/resume.pdf', 
+      href: '#', 
       icon: FileText, 
       label: 'Resume',
-      color: 'hover:text-green-400'
+      color: 'hover:text-green-400',
+      action: 'resume'
     },
   ];
 
@@ -107,18 +112,23 @@ const Navigation = () => {
           {/* Social Links - Desktop */}
           <div className="hidden md:flex items-center space-x-4">
             {socialLinks.map((social, index) => (
-              <motion.a
+              <motion.button
                 key={social.label}
-                href={social.href}
-                target={social.href.startsWith('http') ? '_blank' : '_self'}
-                rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                onClick={() => {
+                  if (social.action === 'resume') {
+                    handleResumeAction('download');
+                  } else {
+                    window.open(social.href, social.href.startsWith('http') ? '_blank' : '_self');
+                  }
+                }}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3, delay: 0.1 * index }}
                 className={`text-gray-400 ${social.color} transition-colors duration-200 transform hover:scale-110`}
+                title={social.label}
               >
                 <social.icon size={20} />
-              </motion.a>
+              </motion.button>
             ))}
           </div>
 
@@ -161,18 +171,23 @@ const Navigation = () => {
               {/* Mobile Social Links */}
               <div className="flex items-center space-x-6 pt-4 border-t border-white/10">
                 {socialLinks.map((social, index) => (
-                  <motion.a
+                  <motion.button
                     key={social.label}
-                    href={social.href}
-                    target={social.href.startsWith('http') ? '_blank' : '_self'}
-                    rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    onClick={() => {
+                      if (social.action === 'resume') {
+                        handleResumeAction('download');
+                      } else {
+                        window.open(social.href, social.href.startsWith('http') ? '_blank' : '_self');
+                      }
+                    }}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: 0.1 * index }}
                     className={`text-gray-400 ${social.color} transition-colors duration-200`}
+                    title={social.label}
                   >
                     <social.icon size={20} />
-                  </motion.a>
+                  </motion.button>
                 ))}
               </div>
             </div>

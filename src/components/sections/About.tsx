@@ -81,7 +81,7 @@ const About = () => {
           >
             <p className="text-lg">
               I&apos;m an <span className="text-blue-400 font-semibold">AI & Agentic Systems Engineer</span> at{' '}
-              <span className="text-teal-400 font-semibold">Syntera Marketplace</span>, specializing in 
+              <span className="text-teal-400 font-semibold">Syntera Obelion.AI</span>, specializing in 
               designing and building <span className="text-purple-400 font-semibold">autonomous AI agents</span> that can 
               perceive, reason, plan, and act to solve complex real-world problems.
             </p>

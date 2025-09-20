@@ -1,9 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ChevronDown, Github, Linkedin, Mail, FileText, Bot, Cpu, Zap } from 'lucide-react';
+import { ChevronDown, Github, Linkedin, Mail, FileText, Bot, Cpu, Zap, Download, Eye } from 'lucide-react';
 import Section from '../ui/Section';
 import TypingEffect from '../ui/TypingEffect';
+import ResumeButton from '../ui/ResumeButton';
+import { handleResumeAction } from '@/utils/resumeUtils';
 
 const Hero = () => {
   const typingTexts = [
@@ -18,25 +20,29 @@ const Hero = () => {
       href: 'https://github.com/fouadmahmoud281', 
       icon: Github, 
       label: 'GitHub',
-      color: 'hover:text-gray-300'
+      color: 'hover:text-gray-300',
+      action: 'link'
     },
     { 
       href: 'https://www.linkedin.com/in/fouad-mahmoud-2832003/', 
       icon: Linkedin, 
       label: 'LinkedIn',
-      color: 'hover:text-blue-400'
+      color: 'hover:text-blue-400',
+      action: 'link'
     },
     { 
       href: 'mailto:fouadmahmoud281@gmail.com', 
       icon: Mail, 
       label: 'Email',
-      color: 'hover:text-red-400'
+      color: 'hover:text-red-400',
+      action: 'link'
     },
     { 
-      href: '/resume.pdf', 
+      href: '#', 
       icon: FileText, 
       label: 'Resume',
-      color: 'hover:text-green-400'
+      color: 'hover:text-green-400',
+      action: 'resume'
     },
   ];
 
@@ -190,25 +196,57 @@ const Hero = () => {
             </a>
           </motion.div>
 
+          {/* Resume Actions */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.5 }}
+            className="flex flex-col sm:flex-row gap-3 mb-8"
+          >
+            <ResumeButton 
+              action="preview" 
+              variant="secondary" 
+              size="md"
+              className="flex-1"
+            >
+              <Eye size={20} />
+              <span>Preview Resume</span>
+            </ResumeButton>
+            <ResumeButton 
+              action="download" 
+              variant="primary" 
+              size="md"
+              className="flex-1"
+            >
+              <Download size={20} />
+              <span>Download CV</span>
+            </ResumeButton>
+          </motion.div>
+
           {/* Social Links */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.6 }}
+            transition={{ duration: 0.6, delay: 1.7 }}
             className="flex justify-center lg:justify-start space-x-6"
           >
             {socialLinks.map((social) => (
-              <motion.a
+              <motion.button
                 key={social.label}
-                href={social.href}
-                target={social.href.startsWith('http') ? '_blank' : '_self'}
-                rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                onClick={() => {
+                  if (social.action === 'resume') {
+                    handleResumeAction('download');
+                  } else {
+                    window.open(social.href, social.href.startsWith('http') ? '_blank' : '_self');
+                  }
+                }}
                 whileHover={{ scale: 1.2, y: -2 }}
                 whileTap={{ scale: 0.9 }}
                 className={`text-gray-400 ${social.color} transition-all duration-200 p-3 rounded-full glass hover:bg-white/10`}
+                title={social.label}
               >
                 <social.icon size={24} />
-              </motion.a>
+              </motion.button>
             ))}
           </motion.div>
         </motion.div>
