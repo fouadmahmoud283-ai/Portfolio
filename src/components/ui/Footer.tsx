@@ -1,10 +1,72 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Mail, FileText, ArrowUp } from 'lucide-react';
+import {
+  Github,
+  Linkedin,
+  Mail,
+  FileText,
+  ArrowUp,
+  Send,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+  Info,
+} from 'lucide-react';
+
+type SubscribeStatus = 'idle' | 'submitting' | 'success' | 'error' | 'info';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<SubscribeStatus>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setStatus('error');
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+
+    setStatus('submitting');
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'footer' }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && (response.status === 201 || response.status === 200)) {
+        if (
+          response.status === 200 &&
+          data.message &&
+          data.message.includes('Already subscribed')
+        ) {
+          setStatus('info');
+          setErrorMessage("You're already subscribed! 📬");
+        } else {
+          setStatus('success');
+          setEmail('');
+        }
+      } else {
+        setStatus('error');
+        setErrorMessage(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setStatus('error');
+      setErrorMessage('Network error. Please check your connection and try again.');
+    }
+  };
   
   const socialLinks = [
     { 
@@ -142,6 +204,110 @@ const Footer = () => {
           </motion.div>
         </div>
 
+        {/* Newsletter Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          viewport={{ once: true }}
+          className="mt-12"
+        >
+          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 sm:p-8">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+              {/* Label / Description */}
+              <div className="lg:flex-shrink-0 lg:max-w-xs">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Mail size={20} className="text-blue-400" />
+                  <h4 className="text-lg font-semibold text-white">Stay Updated</h4>
+                </div>
+                <p className="text-sm text-gray-400">
+                  Subscribe to my newsletter for the latest updates on projects and insights.
+                </p>
+              </div>
+
+              {/* Form */}
+              <form
+                onSubmit={handleSubscribe}
+                className="flex flex-col sm:flex-row gap-3 flex-1 lg:max-w-2xl"
+              >
+                <div className="flex-1">
+                  <label htmlFor="newsletter-email" className="sr-only">
+                    Email address
+                  </label>
+                  <input
+                    id="newsletter-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (status !== 'idle') setStatus('idle');
+                    }}
+                    placeholder="you@example.com"
+                    disabled={status === 'submitting'}
+                    autoComplete="email"
+                    required
+                    className="w-full px-4 py-3 rounded-lg bg-gray-900/60 border border-white/10 text-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-colors duration-200 disabled:opacity-50"
+                  />
+                </div>
+
+                <motion.button
+                  type="submit"
+                  disabled={status === 'submitting'}
+                  whileHover={{ scale: status === 'submitting' ? 1 : 1.03 }}
+                  whileTap={{ scale: status === 'submitting' ? 1 : 0.97 }}
+                  className="flex items-center justify-center space-x-2 px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold hover:from-blue-500 hover:to-purple-500 transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 focus:ring-offset-gray-900"
+                >
+                  {status === 'submitting' ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>Subscribing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={16} />
+                      <span>Subscribe</span>
+                    </>
+                  )}
+                </motion.button>
+              </form>
+            </div>
+
+            {/* Status Messages */}
+            <div aria-live="polite" className="mt-4 min-h-[24px]">
+              {status === 'success' && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center space-x-2 text-sm text-green-400"
+                >
+                  <CheckCircle size={16} />
+                  <span>Subscribed! 🎉</span>
+                </motion.div>
+              )}
+              {status === 'error' && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center space-x-2 text-sm text-red-400"
+                >
+                  <AlertCircle size={16} />
+                  <span>{errorMessage}</span>
+                </motion.div>
+              )}
+              {status === 'info' && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center space-x-2 text-sm text-teal-400"
+                >
+                  <Info size={16} />
+                  <span>{errorMessage}</span>
+                </motion.div>
+              )}
+            </div>
+          </div>
+        </motion.div>
+
         {/* Divider */}
         <div className="border-t border-white/10 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
@@ -185,3 +351,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
