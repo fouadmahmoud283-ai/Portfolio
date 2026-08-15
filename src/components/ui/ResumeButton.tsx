@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Download, Eye, ExternalLink } from 'lucide-react';
+import { FileText, Download, Eye, ExternalLink, Loader2 } from 'lucide-react';
 import { handleResumeAction } from '@/utils/resumeUtils';
 
 interface ResumeButtonProps {
@@ -13,7 +14,7 @@ interface ResumeButtonProps {
   children?: React.ReactNode;
 }
 
-const ResumeButton = ({ 
+const ResumeButton = ({
   variant = 'primary',
   size = 'md',
   action = 'download',
@@ -21,15 +22,29 @@ const ResumeButton = ({
   className = '',
   children
 }: ResumeButtonProps) => {
+  const [loadingAction, setLoadingAction] = useState<'download' | 'preview' | null>(null);
+
   const handleClick = (actionType: 'download' | 'preview') => {
-    handleResumeAction(actionType);
+    setLoadingAction(actionType);
+    try {
+      handleResumeAction(actionType);
+    } catch (error) {
+      console.error('Resume action failed:', error);
+    } finally {
+      // Brief feedback window; the download/preview is fire-and-forget
+      setTimeout(() => setLoadingAction(null), 600);
+    }
   };
 
   const getIcon = (actionType: 'download' | 'preview') => {
     if (!showIcon) return null;
-    
+
     const iconSize = size === 'sm' ? 16 : size === 'lg' ? 24 : 20;
-    
+
+    if (loadingAction === actionType) {
+      return <Loader2 size={iconSize} className="animate-spin" />;
+    }
+
     switch (actionType) {
       case 'download':
         return <Download size={iconSize} />;
@@ -63,6 +78,7 @@ const ResumeButton = ({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => handleClick('preview')}
+          disabled={loadingAction !== null}
           className={getBaseClasses()}
           title="Preview Resume"
         >
@@ -73,6 +89,7 @@ const ResumeButton = ({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => handleClick('download')}
+          disabled={loadingAction !== null}
           className={getBaseClasses()}
           title="Download Resume"
         >
@@ -89,6 +106,7 @@ const ResumeButton = ({
         whileHover={{ scale: 1.1, y: -2 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => handleClick(action)}
+        disabled={loadingAction !== null}
         className={`${getBaseClasses()} ${className}`}
         title={action === 'download' ? 'Download Resume' : 'Preview Resume'}
       >
@@ -102,6 +120,7 @@ const ResumeButton = ({
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={() => handleClick(action)}
+      disabled={loadingAction !== null}
       className={`${getBaseClasses()} ${className}`}
       title={action === 'download' ? 'Download Resume' : 'Preview Resume'}
     >

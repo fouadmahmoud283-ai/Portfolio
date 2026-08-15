@@ -1,32 +1,63 @@
 /**
- * Utility functions for handling resume download and preview functionality
+ * Utility functions for handling resume download and preview functionality.
+ *
+ * Downloads and previews are routed through the `/api/resume` endpoint so the
+ * backend can track requests, enforce rate limits, and set proper headers.
+ * If the API is unreachable, every function falls back to serving the static
+ * PDF file directly from the public directory.
  */
 
 export const RESUME_FILENAME = "Fouad Resume (1).pdf";
 export const RESUME_PATH = `/${RESUME_FILENAME}`;
 
+/** API endpoint that streams the PDF and tracks downloads server-side. */
+export const RESUME_API_PATH = '/api/resume';
+
+/** Same endpoint with a query flag so the server returns the PDF inline. */
+export const RESUME_PREVIEW_PATH = '/api/resume?preview=true';
+
 /**
- * Downloads the resume file with proper naming
+ * Triggers a tracked resume download via the API endpoint.
+ *
+ * Creates a temporary anchor element pointing at the GET `/api/resume`
+ * endpoint, which responds with `Content-Disposition: attachment` so the
+ * browser downloads the file and the server increments the download counter.
+ * Falls back to opening the static PDF in a new tab if the API is unavailable.
  */
 export const downloadResume = () => {
-  const link = document.createElement('a');
-  link.href = RESUME_PATH;
-  link.download = 'Fouad_Mahmoud_Resume.pdf'; // Clean filename for download
-  link.target = '_blank'; // Open in new tab as fallback
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  try {
+    const link = document.createElement('a');
+    link.href = RESUME_API_PATH;
+    link.download = 'Fouad_Mahmoud_Resume.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error('Resume download via API failed, falling back to static file:', error);
+    window.open(RESUME_PATH, '_blank', 'noopener,noreferrer');
+  }
 };
 
 /**
- * Opens the resume in a new tab for preview
+ * Opens the resume in a new browser tab for inline preview.
+ *
+ * Uses the API endpoint with `?preview=true` so the server responds with
+ * `Content-Disposition: inline`, allowing the browser's built-in PDF viewer
+ * to render the file. Falls back to the static PDF path on error.
  */
 export const previewResume = () => {
-  window.open(RESUME_PATH, '_blank', 'noopener,noreferrer');
+  try {
+    window.open(RESUME_PREVIEW_PATH, '_blank', 'noopener,noreferrer');
+  } catch (error) {
+    console.error('Resume preview via API failed, falling back to static file:', error);
+    window.open(RESUME_PATH, '_blank', 'noopener,noreferrer');
+  }
 };
 
 /**
- * Combined function that attempts download first, then preview as fallback
+ * Dispatches to {@link downloadResume} or {@link previewResume} based on the
+ * requested action. Signature is intentionally synchronous (`void`) so all
+ * existing callers (Hero, Contact, ResumeButton) continue to work unchanged.
  */
 export const handleResumeAction = (action: 'download' | 'preview' = 'download') => {
   try {
@@ -43,11 +74,12 @@ export const handleResumeAction = (action: 'download' | 'preview' = 'download') 
 };
 
 /**
- * Check if resume file exists (for development/debugging)
+ * Checks whether the resume endpoint is reachable (for development/debugging).
+ * Best-effort — returns `false` on any network error.
  */
 export const checkResumeExists = async (): Promise<boolean> => {
   try {
-    const response = await fetch(RESUME_PATH, { method: 'HEAD' });
+    const response = await fetch(RESUME_API_PATH, { method: 'HEAD' });
     return response.ok;
   } catch {
     return false;
