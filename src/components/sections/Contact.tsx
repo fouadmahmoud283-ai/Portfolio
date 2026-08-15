@@ -1,12 +1,41 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Github, Linkedin, FileText, Send, MessageCircle, Calendar, Download, Bot, Settings, Cpu, Lightbulb } from 'lucide-react';
+import { Mail, Github, Linkedin, FileText, Send, MessageCircle, Calendar, Download, Bot, Settings, Cpu, Lightbulb, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import Section from '../ui/Section';
 import ResumeButton from '../ui/ResumeButton';
 import { handleResumeAction } from '@/utils/resumeUtils';
 
 const Contact = () => {
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus('submitting');
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        setStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    }
+  };
+
   const contactInfo = [
     {
       icon: Mail,
@@ -225,6 +254,116 @@ const Contact = () => {
             viewport={{ once: true }}
           >
             <h3 className="text-2xl font-bold text-white mb-8">Collaboration Areas</h3>
+
+            {/* Contact Form */}
+            <div className="glass-dark rounded-xl p-6 sm:p-8 mb-8 border border-gray-600 transition-colors duration-300 hover:border-gray-500">
+              <h4 className="text-xl font-bold text-white mb-2">Send a Message</h4>
+              <p className="text-gray-400 text-sm mb-6">
+                Have a project in mind? Drop me a line and I&apos;ll get back to you.
+              </p>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="contact-name" className="block text-sm font-medium text-gray-300 mb-2">
+                      Name
+                    </label>
+                    <input
+                      id="contact-name"
+                      name="name"
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="Your name"
+                      className="w-full px-4 py-3 bg-white/5 border border-gray-600 rounded-lg text-white placeholder-gray-500 transition-all duration-200 hover:border-gray-500 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-email" className="block text-sm font-medium text-gray-300 mb-2">
+                      Email
+                    </label>
+                    <input
+                      id="contact-email"
+                      name="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="you@example.com"
+                      className="w-full px-4 py-3 bg-white/5 border border-gray-600 rounded-lg text-white placeholder-gray-500 transition-all duration-200 hover:border-gray-500 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="contact-subject" className="block text-sm font-medium text-gray-300 mb-2">
+                    Subject
+                  </label>
+                  <input
+                    id="contact-subject"
+                    name="subject"
+                    type="text"
+                    required
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    placeholder="What's this about?"
+                    className="w-full px-4 py-3 bg-white/5 border border-gray-600 rounded-lg text-white placeholder-gray-500 transition-all duration-200 hover:border-gray-500 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="contact-message" className="block text-sm font-medium text-gray-300 mb-2">
+                    Message
+                  </label>
+                  <textarea
+                    id="contact-message"
+                    name="message"
+                    required
+                    rows={4}
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    placeholder="Tell me about your project..."
+                    className="w-full px-4 py-3 bg-white/5 border border-gray-600 rounded-lg text-white placeholder-gray-500 transition-all duration-200 hover:border-gray-500 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 resize-none"
+                  />
+                </div>
+
+                {status === 'success' && (
+                  <div
+                    className="flex items-start space-x-2.5 p-3 rounded-lg bg-green-500/10 border border-green-500/30"
+                    role="status"
+                  >
+                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <p className="text-green-400 text-sm">
+                      Message sent successfully! I&apos;ll get back to you soon.
+                    </p>
+                  </div>
+                )}
+                {status === 'error' && (
+                  <div
+                    className="flex items-start space-x-2.5 p-3 rounded-lg bg-red-500/10 border border-red-500/30"
+                    role="alert"
+                  >
+                    <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <p className="text-red-400 text-sm">
+                      Something went wrong. Please try again or email me directly.
+                    </p>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={status === 'submitting'}
+                  className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 hover:from-blue-400 hover:to-purple-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none"
+                >
+                  {status === 'submitting' ? (
+                    <Loader2 size={18} className="animate-spin" />
+                  ) : (
+                    <Send size={18} />
+                  )}
+                  <span>{status === 'submitting' ? 'Sending...' : 'Send Message'}</span>
+                </button>
+              </form>
+            </div>
+
             <p className="text-gray-300 mb-8 leading-relaxed">
               I&apos;m passionate about working on projects that involve cutting-edge AI technologies 
               and real-world applications. Here are areas where I can add the most value:
@@ -318,3 +457,7 @@ const Contact = () => {
 };
 
 export default Contact;
+
+
+
+
