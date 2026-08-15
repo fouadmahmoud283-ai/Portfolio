@@ -1,0 +1,221 @@
+{
+  "result": "## Subagent Report: test-writer\n**Status:** success | **Iterations:** 4 | **Tool calls:** 10 | **Duration:** 50.6s\n\nAll 11 tests pass across 3 test files. Let me summarize the results.</think>All 11 tests pass across 3 test files. Here's the summary:\n\n## Test Results\n- **3 test files** — all passed\n- **11 tests** — all passed\n- **Duration**: 328ms\n\n## Files Created\n1. **`vitest.config.ts`** — Vitest configuration with Node environment, globals enabled, `@` path alias to `./src`, and test file pattern `src/**/*.test.ts`.\n2. **`src/app/api/contact/route.test.ts`** — 5 tests covering:\n   - POST with valid body → 201 + `{ success: true, id }`\n   - POST with missing fields → 400\n   - POST with invalid email → 400\n   - GET without Authorization → 401\n   - GET with `Bearer test-admin-token` → 200 + messages array includes created message\n3. **`src/app/api/resume/route.test.ts`** — 5 tests covering:\n   - `?action=stats` initially → 200 + `{ downloads: 0, previews: 0 }`\n   - `?action=download` → 200, `application/pdf` Content-Type, `attachment` in Content-Disposition, non-empty body\n   - `?action=preview` → 200, `inline` in Content-Disposition\n   - `?action=stats` after download → `downloads: 1`\n   - Missing action → 400\n4. **`src/app/api/health/route.test.ts`** — 1 test covering: 200 status, `{ status: 'ok' }`, and `timestamp` as a string.\n\n## Files Modified\n1. **`package.json`** — Added `\"test\": \"vitest run\"` and `\"test:watch\": \"vitest\"` scripts (existing scripts preserved); `vitest` and `@vitest/ui` added to devDependencies via `npm install -D`.\n\n## Test Isolation\nBoth contact and resume test suites use temporary directories under `os.tmpdir()` for `process.env.DATA_DIR`, ensuring no interference with real data. The contact suite also saves/restores `process.env.ADMIN_TOKEN`. All temp dirs are cleaned up in `afterAll`.\n\n📊 File operations: 5 write/edit, 5 read/other",
+  "toolEvents": [
+    {
+      "nodeId": "tool-execution",
+      "actionId": "9d9c3c9e-61a3-47db-a2b1-d80454817ff3",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T22:00:54.460Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "9d9c3c9e-61a3-47db-a2b1-d80454817ff3",
+        "name": "read_file",
+        "title": "Running read_file",
+        "argsPreview": "{\"file_path\":\"/home/daytona/Portfolio/src/app/api/contact/route.ts\"}",
+        "runId": "01a00770-95b1-7870-ade4-66c2abe686ad",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "9d9c3c9e-61a3-47db-a2b1-d80454817ff3",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T22:00:55.359Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "9d9c3c9e-61a3-47db-a2b1-d80454817ff3",
+        "name": "read_file",
+        "summary": "Read context file /home/daytona/Portfolio/src/app/api/contact/route.ts",
+        "resultPreview": "     1\timport { NextResponse } from 'next/server';\n     2\timport { contactSchema } from '@/lib/validation';\n     3\timport { addMessage, getMessages } from '@/lib/storage';\n     4\timport { verifyAdminToken } from '@/lib/auth';\n     5\timport { sendContactNotification } from '@/lib/email';\n     6\t\n     7\texport const dynamic = 'force-dynamic';\n     8\t\n     9\texport async function POST(request: Request): Promise<Response> {\n    10\t  // Parse JSON body\n    11\t  let body: unknown;\n    12\t  try {\n    13\t    body = await request.json();\n    14\t  } catch {\n    15\t    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });\n    16\t  }\n    17\t\n    18\t  // Validate input\n    19\t  const result = contactSchema.safeParse(body);\n    20\t  if (!result.success) {\n    21\t    return NextResponse.json(\n    22\t      { error: 'Validation failed', details: result.error.flatten() },\n    23\t      { status: 400 },\n    24\t    );\n    25\t  }\n    26\t\n    27\t  const { name, email, subject, message } = result.data;\n    28\t\n    29\t  // Derive client IP\n    30\t  const forwardedFor = request.headers.get('x-forwarded-for');\n    31\t  const ip = forwardedFor\n    32\t    ? forwardedFor.split(',')[0].trim()\n    33\t    : request.headers.get('x-real-ip') || undefined;\n    34\t\n    35\t  // Persist message\n    36\t  const savedMessage = addMessage({ name, email, subject, message, ip });\n    37\t\n    38\t  // Best-effort email notification (never throws)\n    39\t  await sendContactNotification(savedMessage);\n    40\t\n    41\t  return NextResponse.json(\n    42\t    { success: true, message: 'Message sent successfully', id: savedMessage.id },\n    43\t    { status: 201 },\n    44\t  );\n    45\t}\n    46\t\n    47\texport async function GET(request: Request): Promise<Response> {\n    48\t  if (!verifyAdminToken(request)) {\n    49\t    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });\n    50\t  }\n    51\t\n    52\t  return NextResponse.json({ messages: getMessages() }, { status: 200 });\n    53\t}\n    54\t\n",
+        "duration": 899,
+        "runId": "01a00770-95b1-7870-ade4-66c2abe686ad",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "8b7f3744-c644-45ad-bc1c-e8a6a66a1957",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T22:00:55.359Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "8b7f3744-c644-45ad-bc1c-e8a6a66a1957",
+        "name": "read_file",
+        "title": "Running read_file",
+        "argsPreview": "{\"file_path\":\"/home/daytona/Portfolio/src/app/api/resume/route.ts\"}",
+        "runId": "01a00770-95b1-7870-ade4-66c2abe686ad",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "8b7f3744-c644-45ad-bc1c-e8a6a66a1957",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T22:00:55.558Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "8b7f3744-c644-45ad-bc1c-e8a6a66a1957",
+        "name": "read_file",
+        "summary": "Read context file /home/daytona/Portfolio/src/app/api/resume/route.ts",
+        "resultPreview": "     1\timport { NextResponse } from 'next/server';\n     2\timport fs from 'fs';\n     3\timport path from 'path';\n     4\timport { getStats, incrementDownloads, incrementPreviews } from '@/lib/storage';\n     5\t\n     6\tconst RESUME_FILE = path.join(process.cwd(), 'public', 'Fouad Resume (1).pdf');\n     7\t\n     8\texport const dynamic = 'force-dynamic';\n     9\t\n    10\texport async function GET(request: Request): Promise<Response> {\n    11\t  const { searchParams } = new URL(request.url);\n    12\t  const action = searchParams.get('action');\n    13\t\n    14\t  if (action === 'stats') {\n    15\t    return NextResponse.json(getStats());\n    16\t  }\n    17\t\n    18\t  if (action === 'download' || action === 'preview') {\n    19\t    if (!fs.existsSync(RESUME_FILE)) {\n    20\t      return NextResponse.json({ error: 'Resume file not found' }, { status: 404 });\n    21\t    }\n    22\t\n    23\t    const fileBuffer = fs.readFileSync(RESUME_FILE);\n    24\t\n    25\t    if (action === 'download') {\n    26\t      incrementDownloads();\n    27\t      return new NextResponse(fileBuffer, {\n    28\t        status: 200,\n    29\t        headers: {\n    30\t          'Content-Type': 'application/pdf',\n    31\t          'Content-Disposition': 'attachment; filename=\"Fouad_Mahmoud_Resume.pdf\"',\n    32\t          'Content-Length': fileBuffer.length.toString(),\n    33\t        },\n    34\t      });\n    35\t    }\n    36\t\n    37\t    // action === 'preview'\n    38\t    incrementPreviews();\n    39\t    return new NextResponse(fileBuffer, {\n    40\t      status: 200,\n    41\t      headers: {\n    42\t        'Content-Type': 'application/pdf',\n    43\t        'Content-Disposition': 'inline; filename=\"Fouad_Mahmoud_Resume.pdf\"',\n    44\t        'Content-Length': fileBuffer.length.toString(),\n    45\t      },\n    46\t    });\n    47\t  }\n    48\t\n    49\t  return NextResponse.json(\n    50\t    { error: 'Invalid action. Use ?action=download|preview|stats' },\n    51\t    { status: 400 },\n    52\t  );\n    53\t}\n    54\t\n",
+        "duration": 199,
+        "runId": "01a00770-95b1-7870-ade4-66c2abe686ad",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "f71ac368-d1f1-4f7e-8e04-bd0c1a671958",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T22:00:55.558Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "f71ac368-d1f1-4f7e-8e04-bd0c1a671958",
+        "name": "read_file",
+        "title": "Running read_file",
+        "argsPreview": "{\"file_path\":\"/home/daytona/Portfolio/src/app/api/health/route.ts\"}",
+        "runId": "01a00770-95b1-7870-ade4-66c2abe686ad",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "f71ac368-d1f1-4f7e-8e04-bd0c1a671958",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T22:00:55.757Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "f71ac368-d1f1-4f7e-8e04-bd0c1a671958",
+        "name": "read_file",
+        "summary": "Read context file /home/daytona/Portfolio/src/app/api/health/route.ts",
+        "resultPreview": "     1\timport { NextResponse } from 'next/server';\n     2\t\n     3\texport const dynamic = 'force-dynamic';\n     4\t\n     5\texport async function GET(): Promise<Response> {\n     6\t  return NextResponse.json({\n     7\t    status: 'ok',\n     8\t    timestamp: new Date().toISOString(),\n     9\t    uptime: process.uptime(),\n    10\t  });\n    11\t}\n    12\t\n",
+        "duration": 199,
+        "runId": "01a00770-95b1-7870-ade4-66c2abe686ad",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "b5444dd7-cd62-42f2-bc77-82dd96d7a3f2",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T22:00:55.757Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "b5444dd7-cd62-42f2-bc77-82dd96d7a3f2",
+        "name": "read_file",
+        "title": "Running read_file",
+        "argsPreview": "{\"file_path\":\"/home/daytona/Portfolio/src/lib/storage.ts\"}",
+        "runId": "01a00770-95b1-7870-ade4-66c2abe686ad",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "b5444dd7-cd62-42f2-bc77-82dd96d7a3f2",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T22:00:55.955Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "b5444dd7-cd62-42f2-bc77-82dd96d7a3f2",
+        "name": "read_file",
+        "summary": "Read context file /home/daytona/Portfolio/src/lib/storage.ts",
+        "resultPreview": "     1\timport fs from 'fs';\n     2\timport path from 'path';\n     3\timport { randomUUID } from 'crypto';\n     4\t\n     5\tconst DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), 'data');\n     6\t\n     7\tfunction ensureDataDir(): void {\n     8\t  fs.mkdirSync(DATA_DIR, { recursive: true });\n     9\t}\n    10\t\n    11\tfunction readJson<T>(filename: string, fallback: T): T {\n    12\t  try {\n    13\t    const filePath = path.join(DATA_DIR, filename);\n    14\t    const raw = fs.readFileSync(filePath, 'utf-8');\n    15\t    return JSON.parse(raw) as T;\n    16\t  } catch {\n    17\t    return fallback;\n    18\t  }\n    19\t}\n    20\t\n    21\tfunction writeJson<T>(filename: string, data: T): void {\n    22\t  ensureDataDir();\n    23\t  const filePath = path.join(DATA_DIR, filename);\n    24\t  const tmpPath = filePath + '.tmp';\n    25\t  fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), 'utf-8');\n    26\t  fs.renameSync(tmpPath, filePath);\n    27\t}\n    28\t\n    29\t// ---------------------------------------------------------------------------\n    30\t// Messages\n    31\t// ---------------------------------------------------------------------------\n    32\t\n    33\texport interface Message {\n    34\t  id: string;\n    35\t  name: string;\n    36\t  email: string;\n    37\t  subject: string;\n    38\t  message: string;\n    39\t  createdAt: string;\n    40\t  ip?: string;\n    41\t}\n    42\t\n    43\texport function addMessage(input: Omit<Message, 'id' | 'createdAt'>): Message {\n    44\t  const message: Message = {\n    45\t    ...input,\n    46\t    id: randomUUID(),\n    47\t    createdAt: new Date().toISOString(),\n    48\t  };\n    49\t\n    50\t  const messages = readJson<Message[]>('messages.json', []);\n    51\t  messages.push(message);\n    52\t  writeJson('messages.json', messages);\n    53\t\n    54\t  return message;\n    55\t}\n    56\t\n    57\texport function getMessages(): Message[] {\n    58\t  const messages = readJson<Message[]>('messages.json', []);\n    59\t  return messages.sort((a, b) => b.createdAt.localeCompare(a.createdAt));\n    60\t}\n    61\t\n    62\t// ---------------------------------------------------------------------------\n    63\t// Resume stats\n    64\t// ---------------------------------------------------------------------------\n    65\t\n    66\texport interface ResumeStats {\n    67\t  downloads: number;\n    68\t  previews: number;\n    69\t  lastDownloadedAt?: string;\n    70\t  lastPreviewedAt?: string;\n    71\t}\n    72\t\n    73\texport function getStats(): ResumeStats {\n    74\t  return readJson<ResumeStats>('stats.json', { downloads: 0, previews: 0 });\n    75\t}\n    76\t\n    77\texport function incrementDownloads(): void {\n    78\t  const stats = getStats();\n    79\t  stats.downloads += 1;\n    80\t  stats.lastDownloadedAt = new Date().toISOString();\n    81\t  writeJson('stats.json', stats);\n    82\t}\n    83\t\n    84\texport function incrementPreviews(): void {\n    85\t  const stats = getStats();\n    86\t  stats.previews += 1;\n    87\t  stats.lastPreviewedAt = new Date().toISOString();\n    88\t  writeJson('stats.json', stats);\n    89\t}\n    90\t\n",
+        "duration": 198,
+        "runId": "01a00770-95b1-7870-ade4-66c2abe686ad",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "1093b669-c86a-4c4e-837d-1a51a6015b73",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T22:00:55.955Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "1093b669-c86a-4c4e-837d-1a51a6015b73",
+        "name": "read_file",
+        "title": "Running read_file",
+        "argsPreview": "{\"file_path\":\"/home/daytona/Portfolio/src/lib/auth.ts\"}",
+        "runId": "01a00770-95b1-7870-ade4-66c2abe686ad",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "1093b669-c86a-4c4e-837d-1a51a6015b73",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T22:00:56.152Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "1093b669-c86a-4c4e-837d-1a51a6015b73",
+        "name": "read_file",
+        "summary": "Read context file /home/daytona/Portfolio/src/lib/auth.ts",
+        "resultPreview": "     1\t/**\n     2\t * Verifies that the incoming request carries a valid admin bearer token.\n     3\t *\n     4\t * The token is compared against `process.env.ADMIN_TOKEN` using a\n     5\t * constant-time comparison to mitigate timing attacks. If the env var is\n     6\t * unset or empty, access is denied by default.\n     7\t */\n     8\texport function verifyAdminToken(request: Request): boolean {\n     9\t  const adminToken = process.env.ADMIN_TOKEN;\n    10\t\n    11\t  // Deny by default when no admin token is configured.\n    12\t  if (!adminToken) {\n    13\t    return false;\n    14\t  }\n    15\t\n    16\t  const authHeader = request.headers.get('Authorization');\n    17\t  if (!authHeader) {\n    18\t    return false;\n    19\t  }\n    20\t\n    21\t  const parts = authHeader.split(' ');\n    22\t  if (parts.length !== 2 || parts[0] !== 'Bearer') {\n    23\t    return false;\n    24\t  }\n    25\t\n    26\t  const token = parts[1];\n    27\t  if (!token) {\n    28\t    return false;\n    29\t  }\n    30\t\n    31\t  // Constant-time comparison to mitigate timing attacks.\n    32\t  if (token.length !== adminToken.length) {\n    33\t    return false;\n    34\t  }\n    35\t\n    36\t  let diff = 0;\n    37\t  for (let i = 0; i < token.length; i++) {\n    38\t    diff |= token.charCodeAt(i) ^ adminToken.charCodeAt(i);\n    39\t  }\n    40\t\n    41\t  return diff === 0;\n    42\t}\n    43\t\n",
+        "duration": 197,
+        "runId": "01a00770-95b1-7870-ade4-66c2abe686ad",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "63cd7b4f-d59e-4d50-b8b6-37cd9b0c60b8",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T22:00:56.152Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "63cd7b4f-d59e-4d50-b8b6-37cd9b0c60b8",
+        "name": "read_file",
+        "title": "Running read_file",
+        "argsPreview": "{\"file_path\":\"/home/daytona/Portfolio/package.json\"}",
+        "runId": "01a00770-95b1-7870-ade4-66c2abe686ad",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "63cd7b4f-d59e-4d50-b8b6-37cd9b0c60b8",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T22:00:56.353Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "63cd7b4f-d59e-4d50-b8b6-37cd9b0c60b8",
+        "name": "read_file",
+        "summary": "Read context file /home/daytona/Portfolio/package.json",
+        "resultPreview": "     1\t{\n     2\t  \"name\": \"fouad-portfolio\",\n     3\t  \"version\": \"0.1.0\",\n     4\t  \"private\": true,\n     5\t  \"scripts\": {\n     6\t    \"dev\": \"next dev\",\n     7\t    \"build\": \"next build\",\n     8\t    \"start\": \"next start\",\n     9\t    \"lint\": \"eslint\"\n    10\t  },\n    11\t  \"dependencies\": {\n    12\t    \"framer-motion\": \"^12.23.16\",\n    13\t    \"lucide-react\": \"^0.544.0\",\n    14\t    \"next\": \"15.5.3\",\n    15\t    \"nodemailer\": \"^9.0.5\",\n    16\t    \"react\": \"19.1.0\",\n    17\t    \"react-dom\": \"19.1.0\",\n    18\t    \"react-icons\": \"^5.5.0\",\n    19\t    \"react-intersection-observer\": \"^9.16.0\",\n    20\t    \"react-typed\": \"^2.0.12\",\n    21\t    \"typed.js\": \"^2.1.0\",\n    22\t    \"zod\": \"^4.4.3\"\n    23\t  },\n    24\t  \"devDependencies\": {\n    25\t    \"@eslint/eslintrc\": \"^3\",\n    26\t    \"@types/node\": \"^20\",\n    27\t    \"@types/nodemailer\": \"^8.0.1\",\n    28\t    \"@types/react\": \"^19\",\n    29\t    \"@types/react-dom\": \"^19\",\n    30\t    \"autoprefixer\": \"^10.4.14\",\n    31\t    \"eslint\": \"^9\",\n    32\t    \"eslint-config-next\": \"15.5.3\",\n    33\t    \"postcss\": \"^8\",\n    34\t    \"tailwindcss\": \"^3.4.0\",\n    35\t    \"typescript\": \"^5\"\n    36\t  }\n    37\t}\n",
+        "duration": 201,
+        "runId": "01a00770-95b1-7870-ade4-66c2abe686ad",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "3a7db319-b61e-4285-8568-54171a716e4e",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T22:00:56.353Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "3a7db319-b61e-4285-8568-54171a716e4e",
+        "name": "read_file",
+        "title": "Running read_file",
+        "argsPreview": "{\"file_path\":\"/home/daytona/Portfolio/tsconfig.json\"}
+
+...[truncated: original length 38620 chars]
