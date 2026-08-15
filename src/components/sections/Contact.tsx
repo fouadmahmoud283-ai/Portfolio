@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import { Mail, Github, Linkedin, FileText, Send, MessageCircle, Calendar, Download, Bot, Settings, Cpu, Lightbulb } from 'lucide-react';
 import Section from '../ui/Section';
-import ResumeButton from '../ui/ResumeButton';
 import ContactForm from './ContactForm';
 import { handleResumeAction } from '@/utils/resumeUtils';
 
@@ -340,4 +339,5 @@ const Contact = () => {
 };
 
 export default Contact;
+
 
