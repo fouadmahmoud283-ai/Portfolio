@@ -25,9 +25,9 @@ const Footer = () => {
       label: 'Email',
       color: 'hover:text-red-400'
     },
-    { 
-      href: '/resume.pdf', 
-      icon: FileText, 
+    {
+      href: '/api/resume',
+      icon: FileText,
       label: 'Resume',
       color: 'hover:text-green-400'
     },

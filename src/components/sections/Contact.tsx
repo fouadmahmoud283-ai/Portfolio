@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Mail, Github, Linkedin, FileText, Send, MessageCircle, Calendar, Download, Bot, Settings, Cpu, Lightbulb } from 'lucide-react';
 import Section from '../ui/Section';
-import ResumeButton from '../ui/ResumeButton';
+import ContactForm from './ContactForm';
 import { handleResumeAction } from '@/utils/resumeUtils';
 
 const Contact = () => {
@@ -265,13 +265,34 @@ const Contact = () => {
           </motion.div>
         </div>
 
+        {/* Contact Form Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <span className="text-teal-400 font-mono text-sm uppercase tracking-wider">
+            Send a Message
+          </span>
+          <h3 className="text-3xl md:text-4xl font-bold mt-2 mb-4">
+            <span className="gradient-text">Get In Touch</span>
+          </h3>
+          <p className="text-gray-300 max-w-2xl mx-auto">
+            Have a project in mind or want to collaborate? Fill out the form below and I&apos;ll get back to you soon.
+          </p>
+        </motion.div>
+
+        <ContactForm className="max-w-2xl mx-auto" />
+
         {/* Call to Action */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
           viewport={{ once: true }}
-          className="text-center glass rounded-2xl p-12 border border-white/10"
+          className="text-center glass rounded-2xl p-12 border border-white/10 mt-16"
         >
           <h3 className="text-3xl font-bold text-white mb-4">Ready to Start Your AI Project?</h3>
           <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
@@ -318,3 +339,5 @@ const Contact = () => {
 };
 
 export default Contact;
+
+
