@@ -1,0 +1,268 @@
+{
+  "result": "## Subagent Report: frontend-specialist (auto-selected)\n**Status:** success | **Iterations:** 7 | **Tool calls:** 15 | **Duration:** 129.7s\n\nThe TypeScript compilation passed with no errors. Let me verify the key parts of the Projects.tsx file to make sure the map opening and closing are correct.</think>TypeScript compilation passed with zero errors. Both files are complete and verified.\n\n## Summary\n\n### `src/utils/resumeUtils.ts` (modified)\n- **`RESUME_FILENAME` / `RESUME_PATH`** — kept unchanged for backward compatibility and fallback.\n- **`downloadResume()`** — now async; fetches `/api/resume?action=download`, converts response to a Blob, creates an object URL, triggers download with filename `Fouad_Mahmoud_Resume.pdf`, then revokes the object URL. Falls back to opening the static `RESUME_PATH` on error.\n- **`previewResume()`** — opens `/api/resume?action=preview` in a new tab. Falls back to `RESUME_PATH` on error.\n- **`handleResumeAction(action)`** — same signature `('download' | 'preview' = 'download')`, now async, dispatches to the updated functions, retains the try/catch fallback to `RESUME_PATH`.\n- **`checkResumeExists()`** — HEAD request to `/api/resume?action=preview`, returns `response.ok`, returns `false` on error.\n- **`getResumeAnalytics()`** — new async helper that GETs `/api/resume/analytics` and returns `{ downloadCount, previewCount, lastDownloadedAt }` or `null` on error.\n\n### `src/components/sections/Projects.tsx` (modified)\n- Added `useEffect`, `useState`, and `type ComponentType` imports from React.\n- Added an `iconMap` lookup (`Record<string, ComponentType<…>>`) mapping string keys (`Bot`, `ShoppingCart`, `GraduationCap`, `TrendingUp`) to their lucide-react components, defined outside the component for stable reference.\n- Changed the `icon` field in all four `featuredProjects` entries from component references to string values (e.g. `'Bot'`) so the type is consistent between hardcoded fallback data and API data.\n- Added `projects` state (initialized to `featuredProjects`) and `loading` state.\n- Added a `useEffect` that fetches `/api/projects` on mount, replaces state on success, logs on error (falls back to hardcoded data already in state), and sets `loading` to false in `finally`.\n- Updated the JSX map to iterate over `projects` instead of `featuredProjects`, using `const IconComponent = iconMap[project.icon] || Bot` and rendering `<IconComponent>` instead of `<project.icon>`.\n- Added a subtle loading spinner with \"Loading projects…\" text that shows only while `loading` is true.\n- `projectCategories` array left untouched (still uses component references directly).\n- All existing styling, animations, and layout preserved.\n\n**`npx tsc --noEmit` passed with no errors.**\n\n📊 File operations: 11 write/edit, 4 read/other",
+  "toolEvents": [
+    {
+      "nodeId": "tool-execution",
+      "actionId": "0da77ff1-eba3-429e-b09d-28d1e39f38e4",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T23:20:08.251Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "0da77ff1-eba3-429e-b09d-28d1e39f38e4",
+        "name": "read_file",
+        "title": "Running read_file",
+        "argsPreview": "{\"file_path\":\"src/utils/resumeUtils.ts\"}",
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "0da77ff1-eba3-429e-b09d-28d1e39f38e4",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T23:20:09.199Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "0da77ff1-eba3-429e-b09d-28d1e39f38e4",
+        "name": "read_file",
+        "summary": "Read context file src/utils/resumeUtils.ts",
+        "resultPreview": "     1\t/**\n     2\t * Utility functions for handling resume download and preview functionality\n     3\t */\n     4\t\n     5\texport const RESUME_FILENAME = \"Fouad Resume (1).pdf\";\n     6\texport const RESUME_PATH = `/${RESUME_FILENAME}`;\n     7\t\n     8\t/**\n     9\t * Downloads the resume file with proper naming\n    10\t */\n    11\texport const downloadResume = () => {\n    12\t  const link = document.createElement('a');\n    13\t  link.href = RESUME_PATH;\n    14\t  link.download = 'Fouad_Mahmoud_Resume.pdf'; // Clean filename for download\n    15\t  link.target = '_blank'; // Open in new tab as fallback\n    16\t  document.body.appendChild(link);\n    17\t  link.click();\n    18\t  document.body.removeChild(link);\n    19\t};\n    20\t\n    21\t/**\n    22\t * Opens the resume in a new tab for preview\n    23\t */\n    24\texport const previewResume = () => {\n    25\t  window.open(RESUME_PATH, '_blank', 'noopener,noreferrer');\n    26\t};\n    27\t\n    28\t/**\n    29\t * Combined function that attempts download first, then preview as fallback\n    30\t */\n    31\texport const handleResumeAction = (action: 'download' | 'preview' = 'download') => {\n    32\t  try {\n    33\t    if (action === 'download') {\n    34\t      downloadResume();\n    35\t    } else {\n    36\t      previewResume();\n    37\t    }\n    38\t  } catch (error) {\n    39\t    console.error('Error handling resume action:', error);\n    40\t    // Fallback to simple navigation\n    41\t    window.open(RESUME_PATH, '_blank', 'noopener,noreferrer');\n    42\t  }\n    43\t};\n    44\t\n    45\t/**\n    46\t * Check if resume file exists (for development/debugging)\n    47\t */\n    48\texport const checkResumeExists = async (): Promise<boolean> => {\n    49\t  try {\n    50\t    const response = await fetch(RESUME_PATH, { method: 'HEAD' });\n    51\t    return response.ok;\n    52\t  } catch {\n    53\t    return false;\n    54\t  }\n    55\t};\n",
+        "duration": 948,
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "7904616b-95ea-4659-a81b-670193141bb3",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T23:20:09.199Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "7904616b-95ea-4659-a81b-670193141bb3",
+        "name": "read_file",
+        "title": "Running read_file",
+        "argsPreview": "{\"file_path\":\"src/components/sections/Projects.tsx\"}",
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "7904616b-95ea-4659-a81b-670193141bb3",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T23:20:09.570Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "7904616b-95ea-4659-a81b-670193141bb3",
+        "name": "read_file",
+        "summary": "Read context file src/components/sections/Projects.tsx",
+        "resultPreview": "     1\t'use client';\n     2\t\n     3\timport { motion } from 'framer-motion';\n     4\timport { ExternalLink, Github, Star, Zap, Bot, ShoppingCart, Brain, Database, GraduationCap, TrendingUp } from 'lucide-react';\n     5\timport Section from '../ui/Section';\n     6\t\n     7\tconst Projects = () => {\n     8\t  const featuredProjects = [\n     9\t    {\n    10\t      id: 1,\n    11\t      title: 'Syntera Code Generation',\n    12\t      subtitle: 'PRODUCTION APPLICATION',\n    13\t      description: 'An advanced agentic system that transforms business ideas into production-ready software applications through AI. This autonomous pipeline handles everything from requirements analysis to code generation, testing, and deployment.',\n    14\t      longDescription: 'This sophisticated multi-agent system leverages LangChain and LangGraph to create coordinated AI agents that collaborate to solve complex software development challenges. The system can understand business requirements, architect solutions, generate code, run tests, and deploy applications autonomously.',\n    15\t      technologies: ['LangChain', 'LangGraph', 'LLMs', 'Vector Databases', 'FastAPI', 'CI/CD', 'Python', 'Docker'],\n    16\t      features: [\n    17\t        'Multi-agent reasoning - Coordinated AI agents that collaborate to solve complex problems',\n    18\t        'Spec-to-code generation - Transforms business requirements into working code',\n    19\t        'Automated testing - Built-in validation and quality assurance',\n    20\t        'Continuous feedback loops - Learning from user interactions to improve outputs'\n    21\t      ],\n    22\t      icon: Bot,\n    23\t      gradient: 'from-blue-500 to-purple-600',\n    24\t      status: 'Production',\n    25\t      impact: 'Enterprise-level code generation platform',\n    26\t      category: 'Agentic Systems'\n    27\t    },\n    28\t    {\n    29\t      id: 2,\n    30\t      title: 'Syntera Marketplace',\n    31\t      subtitle: 'PRODUCTION APPLICATION',\n    32\t      description: 'A centralized hub for AI/ML tools and resources that empowers engineers to create, train, and deploy machine learning applications and models. This comprehensive platform streamlines the entire ML workflow from data preparation to model serving.',\n    33\t      longDescription: 'A comprehensive MLOps platform that provides intelligent search and recommendations for AI/ML tools, centralized resource management, streamlined deployment pipelines, and comprehensive analytics. Built with modern web technologies and optimized for scale.',\n    34\t      technologies: ['MLOps', 'Python', 'Web Scraping', 'Streamlit', 'Vector Search', 'API Integration', 'MongoDB', 'React'],\n    35\t      features: [\n    36\t        'AI tool discovery - Intelligent search and recommendations for AI/ML tools',\n    37\t        'Resource management - Centralized control of AI/ML assets',\n    38\t        'Model deployment - Streamlined deployment pipelines for ML models',\n    39\t        'Analytics dashboard - Comprehensive usage and performance metrics'\n    40\t      ],\n    41\t      icon: ShoppingCart,\n    42\t      gradient: 'from-green-500 to-teal-600',\n    43\t      status: 'Production',\n    44\t      impact: 'AI/ML tools marketplace platform',\n    45\t      category: 'MLOps Platform'\n    46\t    },\n    47\t    {\n    48\t      id: 3,\n    49\t      title: 'Princess Nourah University Agentic System',\n    50\t      subtitle: 'EDUCATIONAL AI PLATFORM',\n    51\t      description: 'Comprehensive educational AI system featuring automated quiz generation, intelligent assistant for lecturers and students, and advanced evaluation of student performance with automated grading capabilities.',\n    52\t      longDescription: 'A sophisticated educational platform that leverages AI to enhance the learning experience through intelligent content generation, personalized assistance, and automated assessment. The system provides real-time support for both educators and students while maintaining comprehensive analytics.',\n    53\t      technologies: ['LangChain', 'Educational AI', 'NLP', 'Assessment Systems', 'Database Integration', 'Python', 'Machine Learning'],\n    54\t      features: [\n    55\t        'Automated quiz generation - AI-powered creation of assessments based on course content',\n    56\t        'Intelligent assistant - 24/7 support for lecturers and students with contextual help',\n    57\t        'Performance evaluation - Advanced analytics and automated grading capabilities',\n    58\t        'Personalized learning - Adaptive content delivery based on student progress'\n    59\t      ],\n    60\t      icon: GraduationCap,\n    61\t      gradient: 'from-indigo-500 to-pink-600',\n    62\t      status: 'Deployed',\n    63\t      impact: 'Educational AI transformation platform',\n    64\t      category: 'Educational Technology'\n    65\t    },\n    66\t    {\n    67\t      id: 4,\n    68\t      title: 'OptionStrikes Saudi Financial Group AI System',\n    69\t      subtitle: 'FINANCIAL AI PLATFORM',\n    70\t      description: 'Advanced agentic ...",
+        "duration": 371,
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "c32c52e9-42af-440f-8094-ee47992933c3",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T23:20:09.570Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "c32c52e9-42af-440f-8094-ee47992933c3",
+        "name": "read_file",
+        "title": "Running read_file",
+        "argsPreview": "{\"file_path\":\"src/app/api/projects/route.ts\"}",
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "c32c52e9-42af-440f-8094-ee47992933c3",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T23:20:09.767Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "c32c52e9-42af-440f-8094-ee47992933c3",
+        "name": "read_file",
+        "summary": "Read context file src/app/api/projects/route.ts",
+        "resultPreview": "     1\timport { NextResponse } from 'next/server';\n     2\timport { getProjects } from '@/lib/storage';\n     3\t\n     4\texport async function GET() {\n     5\t  try {\n     6\t    const projects = await getProjects();\n     7\t    return NextResponse.json({ success: true, data: projects });\n     8\t  } catch (error) {\n     9\t    console.error('Projects route error:', error);\n    10\t    return NextResponse.json(\n    11\t      { success: false, error: 'Internal server error' },\n    12\t      { status: 500 },\n    13\t    );\n    14\t  }\n    15\t}\n    16\t\n",
+        "duration": 197,
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "chatcmpl-tool-891058a730f82137",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T23:21:49.060Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "chatcmpl-tool-891058a730f82137",
+        "name": "edit_file",
+        "title": "Running edit_file",
+        "argsPreview": "{\"file_path\":\"/home/daytona/Portfolio/src/utils/resumeUtils.ts\",\"old_string\":\"/**\\n * Downloads the resume file with ...",
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "chatcmpl-tool-891058a730f82137",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T23:21:49.817Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "chatcmpl-tool-891058a730f82137",
+        "name": "edit_file",
+        "summary": "Completed",
+        "resultPreview": "{\"result\":\"Replaced 1 occurrence(s) in '/home/daytona/Portfolio/src/utils/resumeUtils.ts'\",\"status\":\"success\"}",
+        "duration": 757,
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "chatcmpl-tool-9f37ce3d9e22c40c",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T23:21:49.818Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "chatcmpl-tool-9f37ce3d9e22c40c",
+        "name": "edit_file",
+        "title": "Running edit_file",
+        "argsPreview": "{\"file_path\":\"/home/daytona/Portfolio/src/components/sections/Projects.tsx\",\"old_string\":\"import { motion } from 'fra...",
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "chatcmpl-tool-9f37ce3d9e22c40c",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T23:21:50.570Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "chatcmpl-tool-9f37ce3d9e22c40c",
+        "name": "edit_file",
+        "summary": "Completed",
+        "resultPreview": "{\"result\":\"Replaced 1 occurrence(s) in '/home/daytona/Portfolio/src/components/sections/Projects.tsx'\",\"status\":\"success\"}",
+        "duration": 752,
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "chatcmpl-tool-a019244a99f5497a",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T23:21:50.571Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "chatcmpl-tool-a019244a99f5497a",
+        "name": "edit_file",
+        "title": "Running edit_file",
+        "argsPreview": "{\"file_path\":\"/home/daytona/Portfolio/src/components/sections/Projects.tsx\",\"old_string\":\"      icon: Bot,\\n      gra...",
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "chatcmpl-tool-a019244a99f5497a",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T23:21:50.980Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "chatcmpl-tool-a019244a99f5497a",
+        "name": "edit_file",
+        "summary": "Completed",
+        "resultPreview": "{\"result\":\"Replaced 1 occurrence(s) in '/home/daytona/Portfolio/src/components/sections/Projects.tsx'\",\"status\":\"success\"}",
+        "duration": 409,
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "chatcmpl-tool-ba03e0dca7539f06",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T23:21:50.981Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "chatcmpl-tool-ba03e0dca7539f06",
+        "name": "edit_file",
+        "title": "Running edit_file",
+        "argsPreview": "{\"file_path\":\"/home/daytona/Portfolio/src/components/sections/Projects.tsx\",\"old_string\":\"      icon: ShoppingCart,\\n...",
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "chatcmpl-tool-ba03e0dca7539f06",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T23:21:51.393Z",
+      "data": {
+        "status": "success",
+        "type": "tool_end",
+        "toolCallId": "chatcmpl-tool-ba03e0dca7539f06",
+        "name": "edit_file",
+        "summary": "Completed",
+        "resultPreview": "{\"result\":\"Replaced 1 occurrence(s) in '/home/daytona/Portfolio/src/components/sections/Projects.tsx'\",\"status\":\"success\"}",
+        "duration": 412,
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5"
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "chatcmpl-tool-9d4876855d18fa4e",
+      "action": "tool_start",
+      "createdAt": "2026-08-15T23:21:51.394Z",
+      "data": {
+        "status": "pending",
+        "type": "tool_start",
+        "toolCallId": "chatcmpl-tool-9d4876855d18fa4e",
+        "name": "edit_file",
+        "title": "Running edit_file",
+        "argsPreview": "{\"file_path\":\"/home/daytona/Portfolio/src/components/sections/Projects.tsx\",\"old_string\":\"      icon: GraduationCap,\\...",
+        "runId": "01a007b5-f947-7261-88c3-18e4e9031442",
+        "todoId": "todo-5",
+        "activeTaskIndex": 0
+      }
+    },
+    {
+      "nodeId": "tool-execution",
+      "actionId": "chatcmpl-tool-9d4876855d18fa4e",
+      "action": "tool_end",
+      "createdAt": "2026-08-15T23:21:51.803Z",
+      "data": {
+        "status": "success",
+        "type": "too
+
+...[truncated: original length 46432 chars]

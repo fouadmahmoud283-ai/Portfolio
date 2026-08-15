@@ -1,8 +1,16 @@
 'use client';
 
+import { useEffect, useState, type ComponentType } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Github, Star, Zap, Bot, ShoppingCart, Brain, Database, GraduationCap, TrendingUp } from 'lucide-react';
 import Section from '../ui/Section';
+
+const iconMap: Record<string, ComponentType<{ size?: number; className?: string }>> = {
+  Bot,
+  ShoppingCart,
+  GraduationCap,
+  TrendingUp,
+};
 
 const Projects = () => {
   const featuredProjects = [
@@ -19,7 +27,7 @@ const Projects = () => {
         'Automated testing - Built-in validation and quality assurance',
         'Continuous feedback loops - Learning from user interactions to improve outputs'
       ],
-      icon: Bot,
+      icon: 'Bot',
       gradient: 'from-blue-500 to-purple-600',
       status: 'Production',
       impact: 'Enterprise-level code generation platform',
@@ -38,7 +46,7 @@ const Projects = () => {
         'Model deployment - Streamlined deployment pipelines for ML models',
         'Analytics dashboard - Comprehensive usage and performance metrics'
       ],
-      icon: ShoppingCart,
+      icon: 'ShoppingCart',
       gradient: 'from-green-500 to-teal-600',
       status: 'Production',
       impact: 'AI/ML tools marketplace platform',
@@ -57,7 +65,7 @@ const Projects = () => {
         'Performance evaluation - Advanced analytics and automated grading capabilities',
         'Personalized learning - Adaptive content delivery based on student progress'
       ],
-      icon: GraduationCap,
+      icon: 'GraduationCap',
       gradient: 'from-indigo-500 to-pink-600',
       status: 'Deployed',
       impact: 'Educational AI transformation platform',
@@ -76,7 +84,7 @@ const Projects = () => {
         'Real-time insights - Telegram bot for instant financial updates',
         'Market analytics - Comprehensive analysis of Saudi financial markets'
       ],
-      icon: TrendingUp,
+      icon: 'TrendingUp',
       gradient: 'from-yellow-500 to-red-600',
       status: 'Production',
       impact: 'Financial forecasting and analytics platform',
@@ -115,6 +123,24 @@ const Projects = () => {
     }
   ];
 
+  const [projects, setProjects] = useState(featuredProjects);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/projects')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.data)) {
+          setProjects(data.data);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch projects:', err);
+        // Falls back to hardcoded featuredProjects (already in state)
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <Section id="projects" background="gradient">
       <div className="py-12">
@@ -142,7 +168,15 @@ const Projects = () => {
 
         {/* Featured Projects */}
         <div className="space-y-12 mb-20">
-          {featuredProjects.map((project, index) => (
+          {loading && (
+            <div className="flex items-center justify-center py-8">
+              <div className="w-6 h-6 border-2 border-teal-400 border-t-transparent rounded-full animate-spin" />
+              <span className="ml-3 text-gray-400 text-sm">Loading projects...</span>
+            </div>
+          )}
+          {projects.map((project, index) => {
+            const IconComponent = iconMap[project.icon] || Bot;
+            return (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 50 }}
@@ -168,7 +202,7 @@ const Projects = () => {
                   {/* Project Icon & Status */}
                   <div className="flex items-center justify-between mb-6">
                     <div className={`p-4 rounded-xl bg-gradient-to-br ${project.gradient}`}>
-                      <project.icon className="w-8 h-8 text-white" />
+                      <IconComponent className="w-8 h-8 text-white" />
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
@@ -282,7 +316,8 @@ const Projects = () => {
                 </motion.div>
               </div>
             </motion.div>
-          ))}
+          );
+          })}
         </div>
 
         {/* Project Categories */}
@@ -328,3 +363,11 @@ const Projects = () => {
 };
 
 export default Projects;
+
+
+
+
+
+
+
+

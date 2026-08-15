@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Github, Linkedin, FileText, Send, MessageCircle, Calendar, Download, Bot, Settings, Cpu, Lightbulb } from 'lucide-react';
+import { Mail, Github, Linkedin, FileText, Send, MessageCircle, Calendar, Download, Bot, Settings, Cpu, Lightbulb, User, MessageSquare, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import Section from '../ui/Section';
 import ResumeButton from '../ui/ResumeButton';
 import { handleResumeAction } from '@/utils/resumeUtils';
@@ -104,6 +105,82 @@ const Contact = () => {
 
   const scrollToProjects = () => {
     document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // ── Contact form state ──────────────────────────────────────────────
+  const [formValues, setFormValues] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const validate = () => {
+    const next: Record<string, string> = {};
+    if (!formValues.name.trim()) next.name = 'Name is required';
+    if (!formValues.email.trim()) {
+      next.email = 'Email is required';
+    } else if (!emailRegex.test(formValues.email)) {
+      next.email = 'Please enter a valid email address';
+    }
+    if (!formValues.subject.trim()) next.subject = 'Subject is required';
+    if (!formValues.message.trim()) next.message = 'Message is required';
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
+
+  const handleChange = (field: keyof typeof formValues) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormValues((prev) => ({ ...prev, [field]: e.target.value }));
+    // Clear field-level error and reset success banner once the user starts typing again
+    if (errors[field]) {
+      setErrors((prev) => {
+        const copy = { ...prev };
+        delete copy[field];
+        return copy;
+      });
+    }
+    if (status === 'success' || status === 'error') {
+      setStatus('idle');
+      setErrorMessage('');
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    setStatus('submitting');
+    setErrorMessage('');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formValues),
+      });
+
+      if (res.ok) {
+        setStatus('success');
+        setFormValues({ name: '', email: '', subject: '', message: '' });
+        setErrors({});
+      } else {
+        const data = await res.json().catch(() => null);
+        setStatus('error');
+        setErrorMessage(
+          data?.error || 'Something went wrong. Please try again.',
+        );
+      }
+    } catch {
+      setStatus('error');
+      setErrorMessage('Network error. Please check your connection and try again.');
+    }
   };
 
   return (
@@ -265,6 +342,211 @@ const Contact = () => {
           </motion.div>
         </div>
 
+        {/* Contact Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="mb-16"
+        >
+          <div className="glass-dark rounded-2xl p-8 sm:p-10 border border-white/10 max-w-4xl mx-auto">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3 flex items-center justify-center">
+                <Send className="mr-3 text-blue-400" size={28} />
+                Send a <span className="gradient-text ml-2">Message</span>
+              </h3>
+              <p className="text-gray-300 max-w-xl mx-auto">
+                Fill out the form below and I&apos;ll get back to you as soon as possible.
+              </p>
+            </div>
+
+            {/* Status message region (aria-live for screen readers) */}
+            <div aria-live="polite" className="mb-6">
+              {status === 'success' && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center space-x-3 p-4 rounded-xl border border-green-500/50 bg-green-500/10"
+                >
+                  <CheckCircle className="text-green-400 flex-shrink-0" size={24} />
+                  <p className="text-green-300 font-medium">
+                    Message sent! I&apos;ll get back to you soon.
+                  </p>
+                </motion.div>
+              )}
+              {status === 'error' && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center space-x-3 p-4 rounded-xl border border-red-500/50 bg-red-500/10"
+                >
+                  <AlertCircle className="text-red-400 flex-shrink-0" size={24} />
+                  <p className="text-red-300 font-medium">{errorMessage}</p>
+                </motion.div>
+              )}
+            </div>
+
+            <form onSubmit={handleSubmit} noValidate className="space-y-6">
+              {/* Name & Email — two columns on desktop */}
+              <div className="grid sm:grid-cols-2 gap-6">
+                {/* Name */}
+                <div>
+                  <label
+                    htmlFor="contact-name"
+                    className="block text-sm font-medium text-gray-300 mb-2"
+                  >
+                    Name
+                  </label>
+                  <div className="relative">
+                    <User
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={18}
+                    />
+                    <input
+                      id="contact-name"
+                      name="name"
+                      type="text"
+                      value={formValues.name}
+                      onChange={handleChange('name')}
+                      aria-invalid={!!errors.name}
+                      aria-describedby={errors.name ? 'contact-name-error' : undefined}
+                      placeholder="Your name"
+                      className={`w-full pl-10 pr-4 py-3 glass border rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-colors duration-200 ${
+                        errors.name ? 'border-red-500/60' : 'border-gray-600'
+                      }`}
+                    />
+                  </div>
+                  {errors.name && (
+                    <p id="contact-name-error" className="mt-2 text-sm text-red-400">
+                      {errors.name}
+                    </p>
+                  )}
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label
+                    htmlFor="contact-email"
+                    className="block text-sm font-medium text-gray-300 mb-2"
+                  >
+                    Email
+                  </label>
+                  <div className="relative">
+                    <Mail
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={18}
+                    />
+                    <input
+                      id="contact-email"
+                      name="email"
+                      type="email"
+                      value={formValues.email}
+                      onChange={handleChange('email')}
+                      aria-invalid={!!errors.email}
+                      aria-describedby={errors.email ? 'contact-email-error' : undefined}
+                      placeholder="you@example.com"
+                      className={`w-full pl-10 pr-4 py-3 glass border rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-colors duration-200 ${
+                        errors.email ? 'border-red-500/60' : 'border-gray-600'
+                      }`}
+                    />
+                  </div>
+                  {errors.email && (
+                    <p id="contact-email-error" className="mt-2 text-sm text-red-400">
+                      {errors.email}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Subject — full width */}
+              <div>
+                <label
+                  htmlFor="contact-subject"
+                  className="block text-sm font-medium text-gray-300 mb-2"
+                >
+                  Subject
+                </label>
+                <div className="relative">
+                  <MessageSquare
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    size={18}
+                  />
+                  <input
+                    id="contact-subject"
+                    name="subject"
+                    type="text"
+                    value={formValues.subject}
+                    onChange={handleChange('subject')}
+                    aria-invalid={!!errors.subject}
+                    aria-describedby={errors.subject ? 'contact-subject-error' : undefined}
+                    placeholder="What's this about?"
+                    className={`w-full pl-10 pr-4 py-3 glass border rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-colors duration-200 ${
+                      errors.subject ? 'border-red-500/60' : 'border-gray-600'
+                    }`}
+                  />
+                </div>
+                {errors.subject && (
+                  <p id="contact-subject-error" className="mt-2 text-sm text-red-400">
+                    {errors.subject}
+                  </p>
+                )}
+              </div>
+
+              {/* Message — textarea */}
+              <div>
+                <label
+                  htmlFor="contact-message"
+                  className="block text-sm font-medium text-gray-300 mb-2"
+                >
+                  Message
+                </label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  rows={5}
+                  value={formValues.message}
+                  onChange={handleChange('message')}
+                  aria-invalid={!!errors.message}
+                  aria-describedby={errors.message ? 'contact-message-error' : undefined}
+                  placeholder="Tell me about your project, idea, or opportunity..."
+                  className={`w-full px-4 py-3 glass border rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-colors duration-200 resize-none ${
+                    errors.message ? 'border-red-500/60' : 'border-gray-600'
+                  }`}
+                />
+                {errors.message && (
+                  <p id="contact-message-error" className="mt-2 text-sm text-red-400">
+                    {errors.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Submit button */}
+              <div className="flex justify-center pt-2">
+                <motion.button
+                  type="submit"
+                  disabled={status === 'submitting'}
+                  whileHover={{ scale: status === 'submitting' ? 1 : 1.03 }}
+                  whileTap={{ scale: status === 'submitting' ? 1 : 0.97 }}
+                  className="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {status === 'submitting' ? (
+                    <>
+                      <Loader2 className="animate-spin" size={20} />
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={20} />
+                      <span>Send Message</span>
+                    </>
+                  )}
+                </motion.button>
+              </div>
+            </form>
+          </div>
+        </motion.div>
+
         {/* Call to Action */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -318,3 +600,5 @@ const Contact = () => {
 };
 
 export default Contact;
+
+

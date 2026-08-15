@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "title": "Syntera Code Generation",
+    "subtitle": "PRODUCTION APPLICATION",
+    "description": "An advanced agentic system that transforms business ideas into production-ready software applications through AI. This autonomous pipeline handles everything from requirements analysis to code generation, testing, and deployment.",
+    "longDescription": "This sophisticated multi-agent system leverages LangChain and LangGraph to create coordinated AI agents that collaborate to solve complex software development challenges. The system can understand business requirements, architect solutions, generate code, run tests, and deploy applications autonomously.",
+    "technologies": ["LangChain", "LangGraph", "LLMs", "Vector Databases", "FastAPI", "CI/CD", "Python", "Docker"],
+    "features": [
+      "Multi-agent reasoning - Coordinated AI agents that collaborate to solve complex problems",
+      "Spec-to-code generation - Transforms business requirements into working code",
+      "Automated testing - Built-in validation and quality assurance",
+      "Continuous feedback loops - Learning from user interactions to improve outputs"
+    ],
+    "icon": "Bot",
+    "gradient": "from-blue-500 to-purple-600",
+    "status": "Production",
+    "impact": "Enterprise-level code generation platform",
+    "category": "Agentic Systems"
+  },
+  {
+    "id": 2,
+    "title": "Syntera Marketplace",
+    "subtitle": "PRODUCTION APPLICATION",
+    "description": "A centralized hub for AI/ML tools and resources that empowers engineers to create, train, and deploy machine learning applications and models. This comprehensive platform streamlines the entire ML workflow from data preparation to model serving.",
+    "longDescription": "A comprehensive MLOps platform that provides intelligent search and recommendations for AI/ML tools, centralized resource management, streamlined deployment pipelines, and comprehensive analytics. Built with modern web technologies and optimized for scale.",
+    "technologies": ["MLOps", "Python", "Web Scraping", "Streamlit", "Vector Search", "API Integration", "MongoDB", "React"],
+    "features": [
+      "AI tool discovery - Intelligent search and recommendations for AI/ML tools",
+      "Resource management - Centralized control of AI/ML assets",
+      "Model deployment - Streamlined deployment pipelines for ML models",
+      "Analytics dashboard - Comprehensive usage and performance metrics"
+    ],
+    "icon": "ShoppingCart",
+    "gradient": "from-green-500 to-teal-600",
+    "status": "Production",
+    "impact": "AI/ML tools marketplace platform",
+    "category": "MLOps Platform"
+  },
+  {
+    "id": 3,
+    "title": "Princess Nourah University Agentic System",
+    "subtitle": "EDUCATIONAL AI PLATFORM",
+    "description": "Comprehensive educational AI system featuring automated quiz generation, intelligent assistant for lecturers and students, and advanced evaluation of student performance with automated grading capabilities.",
+    "longDescription": "A sophisticated educational platform that leverages AI to enhance the learning experience through intelligent content generation, personalized assistance, and automated assessment. The system provides real-time support for both educators and students while maintaining comprehensive analytics.",
+    "technologies": ["LangChain", "Educational AI", "NLP", "Assessment Systems", "Database Integration", "Python", "Machine Learning"],
+    "features": [
+      "Automated quiz generation - AI-powered creation of assessments based on course content",
+      "Intelligent assistant - 24/7 support for lecturers and students with contextual help",
+      "Performance evaluation - Advanced analytics and automated grading capabilities",
+      "Personalized learning - Adaptive content delivery based on student progress"
+    ],
+    "icon": "GraduationCap",
+    "gradient": "from-indigo-500 to-pink-600",
+    "status": "Deployed",
+    "impact": "Educational AI transformation platform",
+    "category": "Educational Technology"
+  },
+  {
+    "id": 4,
+    "title": "OptionStrikes Saudi Financial Group AI System",
+    "subtitle": "FINANCIAL AI PLATFORM",
+    "description": "Advanced agentic system for AI-powered forecasting of stocks and equity shares, integrated with Gumroad API for subscription management and Telegram bot for real-time financial insights.",
+    "longDescription": "A comprehensive financial AI platform that combines predictive analytics with subscription management and real-time communication. The system provides sophisticated forecasting models for Saudi financial markets with seamless user experience through multiple channels.",
+    "technologies": ["Financial AI", "Forecasting Models", "Gumroad API", "Telegram Bot", "Real-time Analytics", "Python", "Time Series Analysis"],
+    "features": [
+      "AI-powered forecasting - Advanced models for stock and equity prediction",
+      "Subscription management - Integrated Gumroad API for seamless billing",
+      "Real-time insights - Telegram bot for instant financial updates",
+      "Market analytics - Comprehensive analysis of Saudi financial markets"
+    ],
+    "icon": "TrendingUp",
+    "gradient": "from-yellow-500 to-red-600",
+    "status": "Production",
+    "impact": "Financial forecasting and analytics platform",
+    "category": "Financial Technology"
+  }
+]
+
