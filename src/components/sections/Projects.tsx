@@ -1,330 +1,333 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, Star, Zap, Bot, ShoppingCart, Brain, Database, GraduationCap, TrendingUp } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Bot,
+  Check,
+  GraduationCap,
+  Lock,
+  ShoppingCart,
+  TrendingUp,
+} from 'lucide-react';
 import Section from '../ui/Section';
+import SectionHeader from '../ui/SectionHeader';
+import Reveal from '../ui/Reveal';
+import TiltCard from '../ui/TiltCard';
+import Modal from '../ui/Modal';
 
-const Projects = () => {
-  const featuredProjects = [
-    {
-      id: 1,
-      title: 'Syntera Code Generation',
-      subtitle: 'PRODUCTION APPLICATION',
-      description: 'An advanced agentic system that transforms business ideas into production-ready software applications through AI. This autonomous pipeline handles everything from requirements analysis to code generation, testing, and deployment.',
-      longDescription: 'This sophisticated multi-agent system leverages LangChain and LangGraph to create coordinated AI agents that collaborate to solve complex software development challenges. The system can understand business requirements, architect solutions, generate code, run tests, and deploy applications autonomously.',
-      technologies: ['LangChain', 'LangGraph', 'LLMs', 'Vector Databases', 'FastAPI', 'CI/CD', 'Python', 'Docker'],
-      features: [
-        'Multi-agent reasoning - Coordinated AI agents that collaborate to solve complex problems',
-        'Spec-to-code generation - Transforms business requirements into working code',
-        'Automated testing - Built-in validation and quality assurance',
-        'Continuous feedback loops - Learning from user interactions to improve outputs'
-      ],
-      icon: Bot,
-      gradient: 'from-blue-500 to-purple-600',
-      status: 'Production',
-      impact: 'Enterprise-level code generation platform',
-      category: 'Agentic Systems'
-    },
-    {
-      id: 2,
-      title: 'Syntera Marketplace',
-      subtitle: 'PRODUCTION APPLICATION',
-      description: 'A centralized hub for AI/ML tools and resources that empowers engineers to create, train, and deploy machine learning applications and models. This comprehensive platform streamlines the entire ML workflow from data preparation to model serving.',
-      longDescription: 'A comprehensive MLOps platform that provides intelligent search and recommendations for AI/ML tools, centralized resource management, streamlined deployment pipelines, and comprehensive analytics. Built with modern web technologies and optimized for scale.',
-      technologies: ['MLOps', 'Python', 'Web Scraping', 'Streamlit', 'Vector Search', 'API Integration', 'MongoDB', 'React'],
-      features: [
-        'AI tool discovery - Intelligent search and recommendations for AI/ML tools',
-        'Resource management - Centralized control of AI/ML assets',
-        'Model deployment - Streamlined deployment pipelines for ML models',
-        'Analytics dashboard - Comprehensive usage and performance metrics'
-      ],
-      icon: ShoppingCart,
-      gradient: 'from-green-500 to-teal-600',
-      status: 'Production',
-      impact: 'AI/ML tools marketplace platform',
-      category: 'MLOps Platform'
-    },
-    {
-      id: 3,
-      title: 'Princess Nourah University Agentic System',
-      subtitle: 'EDUCATIONAL AI PLATFORM',
-      description: 'Comprehensive educational AI system featuring automated quiz generation, intelligent assistant for lecturers and students, and advanced evaluation of student performance with automated grading capabilities.',
-      longDescription: 'A sophisticated educational platform that leverages AI to enhance the learning experience through intelligent content generation, personalized assistance, and automated assessment. The system provides real-time support for both educators and students while maintaining comprehensive analytics.',
-      technologies: ['LangChain', 'Educational AI', 'NLP', 'Assessment Systems', 'Database Integration', 'Python', 'Machine Learning'],
-      features: [
-        'Automated quiz generation - AI-powered creation of assessments based on course content',
-        'Intelligent assistant - 24/7 support for lecturers and students with contextual help',
-        'Performance evaluation - Advanced analytics and automated grading capabilities',
-        'Personalized learning - Adaptive content delivery based on student progress'
-      ],
-      icon: GraduationCap,
-      gradient: 'from-indigo-500 to-pink-600',
-      status: 'Deployed',
-      impact: 'Educational AI transformation platform',
-      category: 'Educational Technology'
-    },
-    {
-      id: 4,
-      title: 'OptionStrikes Saudi Financial Group AI System',
-      subtitle: 'FINANCIAL AI PLATFORM',
-      description: 'Advanced agentic system for AI-powered forecasting of stocks and equity shares, integrated with Gumroad API for subscription management and Telegram bot for real-time financial insights.',
-      longDescription: 'A comprehensive financial AI platform that combines predictive analytics with subscription management and real-time communication. The system provides sophisticated forecasting models for Saudi financial markets with seamless user experience through multiple channels.',
-      technologies: ['Financial AI', 'Forecasting Models', 'Gumroad API', 'Telegram Bot', 'Real-time Analytics', 'Python', 'Time Series Analysis'],
-      features: [
-        'AI-powered forecasting - Advanced models for stock and equity prediction',
-        'Subscription management - Integrated Gumroad API for seamless billing',
-        'Real-time insights - Telegram bot for instant financial updates',
-        'Market analytics - Comprehensive analysis of Saudi financial markets'
-      ],
-      icon: TrendingUp,
-      gradient: 'from-yellow-500 to-red-600',
-      status: 'Production',
-      impact: 'Financial forecasting and analytics platform',
-      category: 'Financial Technology'
-    }
-  ];
+type Project = {
+  id: string;
+  title: string;
+  org: string;
+  category: string;
+  status: 'Production' | 'Deployed';
+  summary: string;
+  detail: string;
+  technologies: string[];
+  features: { title: string; body: string }[];
+  metrics: { label: string; value: string }[];
+  icon: typeof Bot;
+  accent: string;
+};
 
-  const projectCategories = [
-    {
-      title: 'Autonomous Agent Systems',
-      description: 'Multi-agent architectures that can perceive, reason, plan, and act to solve complex tasks with minimal human intervention.',
-      icon: Bot,
-      color: 'text-blue-400',
-      technologies: ['LangChain', 'LangGraph', 'LLMs']
-    },
-    {
-      title: 'LLM-powered Applications',
-      description: 'Fine-tuned and optimized LLM implementations for specific domains, with sophisticated prompting strategies.',
-      icon: Brain,
-      color: 'text-purple-400',
-      technologies: ['LangSmith', 'Vector DBs', 'Fine-tuning']
-    },
-    {
-      title: 'Robotics & Mechatronics',
-      description: 'Intelligent systems that bridge the gap between software and hardware, combining AI with physical world interaction.',
-      icon: Zap,
-      color: 'text-teal-400',
-      technologies: ['Control Systems', 'Sensors', 'Actuators']
-    },
-    {
-      title: 'AI Data Pipelines',
-      description: 'End-to-end data workflows that ingest, process, and transform data for AI/ML applications.',
-      icon: Database,
-      color: 'text-green-400',
-      technologies: ['MLOps', 'Data Engineering', 'Python']
-    }
-  ];
+const PROJECTS: Project[] = [
+  {
+    id: 'codegen',
+    title: 'Syntera Code Generation',
+    org: 'Obelion.AI',
+    category: 'Agentic Systems',
+    status: 'Production',
+    summary:
+      'An autonomous pipeline that takes a business requirement and returns a tested, deployable application — requirements analysis through to CI.',
+    detail:
+      'A supervisor agent decomposes an incoming spec into a task graph, then delegates to specialist agents for architecture, implementation, and test authoring. Generated code is executed in a sandbox, tested, and fed back through a critic loop until the suite passes. Retrieval over an internal pattern library keeps output consistent with house conventions rather than generic boilerplate.',
+    technologies: ['LangGraph', 'LangChain', 'Vector DBs', 'FastAPI', 'Docker', 'CI/CD', 'Python'],
+    features: [
+      { title: 'Multi-agent reasoning', body: 'Supervisor delegates to architect, implementer, and test agents over a shared typed state.' },
+      { title: 'Spec to code', body: 'Business requirements are compiled into a dependency-ordered task graph before a line is written.' },
+      { title: 'Automated validation', body: 'Every artifact runs in a sandbox with generated tests gating the merge.' },
+      { title: 'Feedback loops', body: 'Failed runs re-enter planning with the failure trace as context, not as a retry.' },
+    ],
+    metrics: [
+      { label: 'Environment', value: 'Prod' },
+      { label: 'Agents in graph', value: '6' },
+      { label: 'Test gate', value: 'Enforced' },
+    ],
+    icon: Bot,
+    accent: '#22d3ee',
+  },
+  {
+    id: 'marketplace',
+    title: 'Syntera Marketplace',
+    org: 'Obelion.AI',
+    category: 'MLOps Platform',
+    status: 'Production',
+    summary:
+      'A central hub for AI/ML tooling — discovery, resource management, and deployment pipelines for teams building and serving models.',
+    detail:
+      'A platform that consolidates model and tool discovery behind semantic search, then carries an asset all the way to a served endpoint. Ingestion runs on scheduled scraping and normalisation jobs; the serving layer standardises deployment so teams stop hand-rolling one-off inference services.',
+    technologies: ['MLOps', 'Vector Search', 'Streamlit', 'MongoDB', 'React', 'Python'],
+    features: [
+      { title: 'Semantic discovery', body: 'Embedding-backed search and recommendation across the tool catalogue.' },
+      { title: 'Resource management', body: 'One registry for models, datasets, and the pipelines that connect them.' },
+      { title: 'Deployment pipelines', body: 'A standard path from registered model to served endpoint.' },
+      { title: 'Usage analytics', body: 'Adoption and performance metrics per tool and per team.' },
+    ],
+    metrics: [
+      { label: 'Environment', value: 'Prod' },
+      { label: 'Surface', value: 'Full-stack' },
+      { label: 'Retrieval', value: 'Hybrid' },
+    ],
+    icon: ShoppingCart,
+    accent: '#34d399',
+  },
+  {
+    id: 'pnu',
+    title: 'Princess Nourah University Platform',
+    org: 'Client engagement',
+    category: 'Educational AI',
+    status: 'Deployed',
+    summary:
+      'Agentic coursework infrastructure: automated assessment generation, a contextual assistant for staff and students, and automated grading.',
+    detail:
+      'Course material is indexed per module, so generated assessments and assistant answers stay scoped to what a given cohort has actually been taught. Grading runs through a rubric-constrained chain with human review on low-confidence outputs, and per-student progress feeds back into how content is sequenced.',
+    technologies: ['LangChain', 'NLP', 'Assessment Systems', 'Python', 'Machine Learning'],
+    features: [
+      { title: 'Assessment generation', body: 'Quizzes derived from indexed course content, difficulty-tagged per module.' },
+      { title: 'Contextual assistant', body: 'Round-the-clock support for lecturers and students, grounded in the syllabus.' },
+      { title: 'Automated grading', body: 'Rubric-constrained scoring with human review on low-confidence results.' },
+      { title: 'Adaptive sequencing', body: 'Delivery adjusts to measured student progress rather than a fixed track.' },
+    ],
+    metrics: [
+      { label: 'Status', value: 'Deployed' },
+      { label: 'Users', value: 'Staff + students' },
+      { label: 'Grading', value: 'Rubric-gated' },
+    ],
+    icon: GraduationCap,
+    accent: '#7c5cff',
+  },
+  {
+    id: 'optionstrikes',
+    title: 'OptionStrikes Financial AI',
+    org: 'Saudi Financial Group',
+    category: 'Financial Technology',
+    status: 'Production',
+    summary:
+      'Forecasting agents for equities and options, wired to subscription billing and a Telegram bot for real-time delivery.',
+    detail:
+      'Time-series models and an LLM analysis layer produce forecasts for Saudi market instruments, with the reasoning surfaced alongside the number rather than hidden behind it. Gumroad handles entitlement, and a Telegram bot delivers signals and answers follow-up questions against the same context the forecast was generated from.',
+    technologies: ['Forecasting', 'Time Series', 'Gumroad API', 'Telegram Bot', 'Python'],
+    features: [
+      { title: 'Forecasting models', body: 'Equity and options prediction over Saudi market instruments.' },
+      { title: 'Subscription entitlement', body: 'Gumroad integration gates access and handles billing lifecycle.' },
+      { title: 'Real-time delivery', body: 'Telegram bot pushes signals and fields follow-up questions in context.' },
+      { title: 'Market analytics', body: 'Aggregate analysis layered on top of the per-instrument forecasts.' },
+    ],
+    metrics: [
+      { label: 'Environment', value: 'Prod' },
+      { label: 'Delivery', value: 'Realtime' },
+      { label: 'Billing', value: 'Integrated' },
+    ],
+    icon: TrendingUp,
+    accent: '#fbbf24',
+  },
+];
+
+export default function Projects() {
+  const [openId, setOpenId] = useState<string | null>(null);
+  const active = PROJECTS.find((p) => p.id === openId) ?? null;
 
   return (
-    <Section id="projects" background="gradient">
-      <div className="py-12">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="text-teal-400 font-mono text-sm uppercase tracking-wider">
-            Featured Work
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-6">
-            <span className="gradient-text">Production</span>
-            <br />
-            <span className="text-white">Projects</span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Real-world applications that demonstrate expertise in AI, agentic systems, 
-            and production-ready software development.
-          </p>
-        </motion.div>
+    <Section id="projects" divider>
+      <SectionHeader
+        kicker="Selected work"
+        title={
+          <>
+            Systems running in{' '}
+            <span className="text-gradient">production</span>
+          </>
+        }
+        description="Four agentic platforms serving real users — code generation, MLOps, education, and financial forecasting. Built end to end, not prototyped and abandoned."
+      />
 
-        {/* Featured Projects */}
-        <div className="space-y-12 mb-20">
-          {featuredProjects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
-              viewport={{ once: true }}
-              className={`grid lg:grid-cols-2 gap-12 items-center ${
-                index % 2 === 1 ? 'lg:grid-flow-col-dense' : ''
-              }`}
+      <div className="mt-16 grid gap-6 lg:grid-cols-2">
+        {PROJECTS.map((project, i) => (
+          <Reveal key={project.id} delay={i * 0.09}>
+            <TiltCard
+              intensity={5}
+              glowColor={`${project.accent}22`}
+              className="h-full rounded-3xl"
             >
-              {/* Project Visual */}
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-                className={`relative glass-dark rounded-2xl p-8 ${
-                  index % 2 === 1 ? 'lg:col-start-2' : ''
-                }`}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br opacity-10 rounded-2xl"
-                     style={{backgroundImage: `linear-gradient(135deg, ${project.gradient.split(' ')[1]} 0%, ${project.gradient.split(' ')[3]} 100%)`}}
+              <article className="surface group relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-colors duration-500 hover:border-white/[0.14]">
+                {/* Accent bar that grows on hover */}
+                <span
+                  className="absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 transition-transform duration-700 group-hover:scale-y-100"
+                  style={{ background: project.accent }}
                 />
-                <div className="relative z-10">
-                  {/* Project Icon & Status */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className={`p-4 rounded-xl bg-gradient-to-br ${project.gradient}`}>
-                      <project.icon className="w-8 h-8 text-white" />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                      <span className="text-green-400 text-sm font-medium">{project.status}</span>
-                    </div>
+
+                {/* Head */}
+                <div className="flex items-start justify-between gap-4">
+                  <div
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border p-3.5 transition-transform duration-500 group-hover:scale-110"
+                    style={{
+                      borderColor: `${project.accent}33`,
+                      background: `${project.accent}12`,
+                    }}
+                  >
+                    <project.icon size={22} style={{ color: project.accent }} />
                   </div>
 
-                  {/* Tech Stack */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.technologies.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-3 py-1 text-xs font-mono bg-white/10 rounded-full text-gray-300"
+                  <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-1.5 rounded-full border border-mint/25 bg-mint/[0.08] px-2.5 py-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-mint" />
+                      <span className="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-mint">
+                        {project.status}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Body */}
+                <div className="mt-6 flex-1">
+                  <p className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-ink-faint">
+                    {project.category} · {project.org}
+                  </p>
+                  <h3 className="mt-2.5 text-2xl font-semibold leading-tight text-ink">
+                    {project.title}
+                  </h3>
+                  <p className="mt-3.5 text-[0.94rem] leading-relaxed text-ink-dim">
+                    {project.summary}
+                  </p>
+
+                  {/* Metrics */}
+                  <div className="mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-white/[0.07]">
+                    {project.metrics.map((metric) => (
+                      <div
+                        key={metric.label}
+                        className="bg-white/[0.025] px-3 py-3 text-center"
                       >
+                        <div className="font-mono text-sm font-semibold text-ink">
+                          {metric.value}
+                        </div>
+                        <div className="mt-0.5 text-[0.62rem] uppercase tracking-wide text-ink-faint">
+                          {metric.label}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Stack */}
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {project.technologies.map((tech) => (
+                      <span key={tech} className="chip">
                         {tech}
                       </span>
                     ))}
                   </div>
-
-                  {/* Project Metrics */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-4 bg-white/5 rounded-lg">
-                      <div className="text-2xl font-bold text-blue-400">PROD</div>
-                      <div className="text-xs text-gray-400">Environment</div>
-                    </div>
-                    <div className="text-center p-4 bg-white/5 rounded-lg">
-                      <div className="text-2xl font-bold text-green-400">AI</div>
-                      <div className="text-xs text-gray-400">Powered</div>
-                    </div>
-                  </div>
                 </div>
-              </motion.div>
 
-              {/* Project Details */}
-              <div className={index % 2 === 1 ? 'lg:col-start-1' : ''}>
-                <motion.div
-                  initial={{ opacity: 0, x: index % 2 === 0 ? 50 : -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  viewport={{ once: true }}
-                >
-                  {/* Project Badge */}
-                  <div className="flex items-center space-x-3 mb-4">
-                    <span className="px-3 py-1 text-xs font-bold bg-red-500/20 text-red-400 rounded-full border border-red-500/30">
-                      {project.subtitle}
-                    </span>
-                    <span className="px-3 py-1 text-xs font-medium bg-blue-500/20 text-blue-400 rounded-full border border-blue-500/30">
-                      {project.category}
-                    </span>
-                  </div>
+                {/* Foot */}
+                <div className="mt-7 flex items-center justify-between gap-4 border-t border-white/[0.07] pt-5">
+                  <button
+                    onClick={() => setOpenId(project.id)}
+                    className="group/btn inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-cyan-glow"
+                  >
+                    Read the case study
+                    <ArrowUpRight
+                      size={15}
+                      className="transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5"
+                    />
+                  </button>
 
-                  {/* Title */}
-                  <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                    {project.title}
-                  </h3>
-
-                  {/* Impact */}
-                  <p className="text-lg text-gray-400 mb-6 italic">
-                    {project.impact}
-                  </p>
-
-                  {/* Description */}
-                  <p className="text-gray-300 mb-6 leading-relaxed">
-                    {project.description}
-                  </p>
-
-                  {/* Key Features */}
-                  <div className="mb-8">
-                    <h4 className="text-lg font-semibold text-white mb-4">Key Features</h4>
-                    <ul className="space-y-3">
-                      {project.features.map((feature, featureIndex) => (
-                        <motion.li
-                          key={featureIndex}
-                          initial={{ opacity: 0, x: 20 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.5, delay: 0.5 + featureIndex * 0.1 }}
-                          viewport={{ once: true }}
-                          className="flex items-start space-x-3"
-                        >
-                          <Star className="w-5 h-5 text-yellow-400 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-300 text-sm">
-                            <strong className="text-white">{feature.split(' - ')[0]}</strong>
-                            {feature.includes(' - ') && (
-                              <span> - {feature.split(' - ')[1]}</span>
-                            )}
-                          </span>
-                        </motion.li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
-                    >
-                      <ExternalLink size={18} />
-                      <span>View Details</span>
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex items-center justify-center space-x-2 px-6 py-3 glass border border-gray-600 text-gray-300 rounded-lg font-semibold transition-all duration-300 hover:border-gray-400 hover:text-white"
-                    >
-                      <Github size={18} />
-                      <span>Source Code</span>
-                    </motion.button>
-                  </div>
-                </motion.div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Project Categories */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h3 className="text-3xl font-bold text-white mb-4">What I Build</h3>
-          <p className="text-gray-300 max-w-2xl mx-auto">
-            Specialized in creating intelligent systems across multiple domains
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {projectCategories.map((category, index) => (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="glass-dark rounded-xl p-6 hover:bg-white/10 transition-all duration-300 group text-center"
-            >
-              <category.icon className={`w-12 h-12 ${category.color} mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`} />
-              <h4 className="font-bold text-white mb-3">{category.title}</h4>
-              <p className="text-gray-400 text-sm mb-4 leading-relaxed">{category.description}</p>
-              <div className="flex flex-wrap justify-center gap-1">
-                {category.technologies.map((tech) => (
-                  <span key={tech} className="px-2 py-1 text-xs font-mono bg-white/10 rounded text-gray-400">
-                    {tech}
+                  {/* Honest about why there is no repo link */}
+                  <span
+                    className="inline-flex items-center gap-1.5 font-mono text-[0.62rem] text-ink-faint"
+                    title="Client and employer work — source is not public"
+                  >
+                    <Lock size={11} />
+                    Private source
                   </span>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                </div>
+              </article>
+            </TiltCard>
+          </Reveal>
+        ))}
       </div>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Case study modal                                                  */}
+      {/* ---------------------------------------------------------------- */}
+      <Modal
+        open={Boolean(active)}
+        onClose={() => setOpenId(null)}
+        title={active?.title ?? ''}
+      >
+        {active && (
+          <div className="p-7 sm:p-9">
+            <div className="flex items-center gap-3">
+              <div
+                className="flex h-11 w-11 items-center justify-center rounded-xl border"
+                style={{
+                  borderColor: `${active.accent}33`,
+                  background: `${active.accent}12`,
+                }}
+              >
+                <active.icon size={19} style={{ color: active.accent }} />
+              </div>
+              <div>
+                <p className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-ink-faint">
+                  {active.category} · {active.org}
+                </p>
+                <h3 className="text-xl font-semibold text-ink">
+                  {active.title}
+                </h3>
+              </div>
+            </div>
+
+            <p className="mt-6 leading-relaxed text-ink-dim">{active.detail}</p>
+
+            <h4 className="mt-8 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-cyan-glow">
+              What it does
+            </h4>
+            <ul className="mt-4 space-y-3.5">
+              {active.features.map((feature, i) => (
+                <motion.li
+                  key={feature.title}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.35, delay: 0.06 * i }}
+                  className="flex gap-3"
+                >
+                  <Check
+                    size={15}
+                    className="mt-1 shrink-0"
+                    style={{ color: active.accent }}
+                  />
+                  <span className="text-sm leading-relaxed text-ink-dim">
+                    <strong className="font-semibold text-ink">
+                      {feature.title}
+                    </strong>{' '}
+                    — {feature.body}
+                  </span>
+                </motion.li>
+              ))}
+            </ul>
+
+            <h4 className="mt-8 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-cyan-glow">
+              Stack
+            </h4>
+            <div className="mt-4 flex flex-wrap gap-1.5">
+              {active.technologies.map((tech) => (
+                <span key={tech} className="chip">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </Modal>
     </Section>
   );
-};
-
-export default Projects;
+}

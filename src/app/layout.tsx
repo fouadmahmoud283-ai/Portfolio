@@ -1,56 +1,75 @@
-import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata, Viewport } from 'next';
+import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
+import './globals.css';
 
 const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  variable: '--font-display',
+  display: 'swap',
 });
 
 const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
 });
 
+const SITE_URL = 'https://fouadmahmoud-portfolio.vercel.app';
+const TITLE = 'Fouad Mahmoud — AI & Agentic Systems Engineer';
+const DESCRIPTION =
+  'AI & Agentic Systems Engineer at Obelion.AI. I build autonomous multi-agent systems with LangGraph and LangChain — planning, retrieval, tool-use, and self-correction, running in production.';
+
 export const metadata: Metadata = {
-  title: "Fouad Mahmoud - AI & Agentic Systems Engineer",
-  description: "AI & Agentic Systems Engineer at Obelion.Ai. Specializing in autonomous AI systems, LangChain, LangGraph, and multi-agent architectures. Mechatronics & Robotics Engineering Student.",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
   keywords: [
-    "AI Engineer",
-    "Agentic Systems",
-    "LangChain",
-    "LangGraph",
-    "Machine Learning",
-    "Robotics",
-    "Mechatronics",
-    "Python",
-    "Portfolio",
-    "Fouad Mahmoud"
+    'AI Engineer',
+    'LLM Engineer',
+    'Agentic Systems',
+    'Multi-Agent Systems',
+    'LangChain',
+    'LangGraph',
+    'RAG',
+    'MLOps',
+    'Machine Learning',
+    'Robotics',
+    'Mechatronics',
+    'Python',
+    'Fouad Mahmoud',
   ],
-  authors: [{ name: "Fouad Mahmoud" }],
-  creator: "Fouad Mahmoud",
-  publisher: "Fouad Mahmoud",
+  authors: [{ name: 'Fouad Mahmoud' }],
+  creator: 'Fouad Mahmoud',
+  publisher: 'Fouad Mahmoud',
+  alternates: { canonical: '/' },
   openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://fouadmahmoud-portfolio.vercel.app",
-    title: "Fouad Mahmoud - AI & Agentic Systems Engineer",
-    description: "AI & Agentic Systems Engineer specializing in autonomous AI systems and multi-agent architectures",
-    siteName: "Fouad Mahmoud Portfolio",
+    type: 'website',
+    locale: 'en_US',
+    url: SITE_URL,
+    title: TITLE,
+    description: DESCRIPTION,
+    siteName: 'Fouad Mahmoud',
     images: [
       {
-        url: "/og-image.jpg",
+        url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: "Fouad Mahmoud - AI Engineer Portfolio"
-      }
-    ]
+        alt: 'Fouad Mahmoud — AI & Agentic Systems Engineer',
+      },
+    ],
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Fouad Mahmoud - AI & Agentic Systems Engineer",
-    description: "AI & Agentic Systems Engineer specializing in autonomous AI systems and multi-agent architectures",
-    images: ["/og-image.jpg"]
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ['/og-image.jpg'],
   },
   robots: {
     index: true,
@@ -58,27 +77,29 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
     },
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
+};
+
+// `viewport` is its own export in the App Router — keeping it inside
+// `metadata` silently drops the theme colour.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#04050a',
+  colorScheme: 'dark',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}
       >
         {children}
       </body>

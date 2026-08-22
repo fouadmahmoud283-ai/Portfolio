@@ -1,335 +1,292 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { Briefcase, Users, GraduationCap, Calendar, MapPin, Star, Award, ChevronRight } from 'lucide-react';
+import { useRef } from 'react';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
+import {
+  Award,
+  Briefcase,
+  Calendar,
+  GraduationCap,
+  MapPin,
+  Users,
+} from 'lucide-react';
 import Section from '../ui/Section';
+import SectionHeader from '../ui/SectionHeader';
+import Reveal from '../ui/Reveal';
 
-const Experience = () => {
-  const experiences = [
-    {
-      id: 1,
-      title: 'AI & Agentic Systems Engineer',
-      company: 'Obelion.Ai',
-      location: 'Remote',
-      period: 'Present',
-      type: 'Full-time',
-      status: 'current',
-      description: 'Leading the development of autonomous AI systems and multi-agent architectures for production applications.',
-      achievements: [
-        'Lead engineer on Syntera Code Generation & Marketplace products',
-        'Architect multi-agent AI systems using LangChain & LangGraph',
-        'Build autonomous workflows with LLMs for complex tasks',
-        'Develop data pipelines and vector database solutions',
-        'Collaborate with cross-functional teams to deliver production-ready AI applications'
-      ],
-      technologies: ['LangChain', 'LangGraph', 'LLMs', 'Vector Databases', 'Python', 'FastAPI', 'MLOps'],
-      icon: Briefcase,
-      color: 'text-blue-400',
-      gradient: 'from-blue-500 to-purple-600'
-    },
-    {
-      id: 2,
-      title: 'AI & Data Science Instructor',
-      company: 'Educational Institution',
-      location: 'Hybrid',
-      period: '1.5 Years',
-      type: 'Full-time',
-      status: 'completed',
-      description: 'Taught fundamentals of robotics, AI, and data science to students and professionals.',
-      achievements: [
-        'Designed curriculum and hands-on projects for AI/ML courses',
-        'Mentored 50+ students on real-world AI applications',
-        'Conducted workshops on Python, ML, and AI ethics',
-        'Developed practical lab exercises for robotics integration',
-        'Created educational content for online learning platforms'
-      ],
-      technologies: ['Python', 'Jupyter', 'Scikit-learn', 'TensorFlow', 'Robotics', 'Teaching', 'Curriculum Design'],
-      icon: Users,
-      color: 'text-green-400',
-      gradient: 'from-green-500 to-teal-600'
-    }
-  ];
+const ROLES = [
+  {
+    id: 'obelion',
+    title: 'AI & Agentic Systems Engineer',
+    company: 'Obelion.AI',
+    location: 'Remote',
+    period: 'Present',
+    type: 'Full-time',
+    current: true,
+    summary:
+      'Lead engineer on the Syntera code generation and marketplace products, building the agent runtime behind both.',
+    achievements: [
+      'Architect multi-agent systems on LangGraph with typed state and explicit control flow',
+      'Own the retrieval layer — hybrid search, reranking, and evaluation harnesses',
+      'Ship autonomous workflows from prototype to production behind FastAPI services',
+      'Instrument every graph with tracing, cost accounting, and regression evals',
+      'Partner with product and design to turn model capability into usable surface',
+    ],
+    stack: ['LangGraph', 'LangChain', 'Vector DBs', 'FastAPI', 'MLOps', 'Python'],
+    icon: Briefcase,
+    accent: '#22d3ee',
+  },
+  {
+    id: 'instructor',
+    title: 'AI & Data Science Instructor',
+    company: 'Educational Institution',
+    location: 'Hybrid',
+    period: '1.5 years',
+    type: 'Full-time',
+    current: false,
+    summary:
+      'Taught robotics, machine learning, and data science to students and working professionals.',
+    achievements: [
+      'Designed curriculum and hands-on project tracks for AI/ML courses',
+      'Mentored 50+ students through real-world applied projects',
+      'Ran workshops on Python, classical ML, and AI ethics',
+      'Built lab exercises bridging software models and robotics hardware',
+      'Produced course content for online delivery',
+    ],
+    stack: ['Python', 'Scikit-learn', 'TensorFlow', 'Jupyter', 'Robotics'],
+    icon: Users,
+    accent: '#34d399',
+  },
+];
 
-  const education = [
-    {
-      id: 1,
-      degree: 'Mechatronics & Robotics Engineering',
-      institution: 'University',
-      period: 'Current',
-      status: 'current',
-      description: 'Studying the intersection of mechanical engineering, electronics, and software to build intelligent physical systems.',
-      focus: [
-        'Control Systems and Automation',
-        'Sensor Integration and Signal Processing',
-        'Robotics Programming and AI Integration',
-        'Mechanical Design and Manufacturing',
-        'Embedded Systems Development'
-      ],
-      icon: GraduationCap,
-      color: 'text-purple-400'
-    }
-  ];
+const EDUCATION = {
+  degree: 'Mechatronics & Robotics Engineering',
+  institution: 'University',
+  period: 'In progress',
+  summary:
+    'The intersection of mechanical engineering, electronics, and software — and where my instinct for feedback loops came from.',
+  focus: [
+    'Control systems and automation',
+    'Sensor integration and signal processing',
+    'Robotics programming and AI integration',
+    'Embedded systems development',
+    'Mechanical design and manufacturing',
+  ],
+};
 
-  const certifications = [
-    { name: 'LangChain & LangGraph Specialist', issuer: 'Self-Directed Learning', year: '2024' },
-    { name: 'MLOps Engineering', issuer: 'Industry Experience', year: '2024' },
-    { name: 'Advanced Python for AI/ML', issuer: 'Professional Development', year: '2023' },
-    { name: 'AI Ethics & Responsible AI', issuer: 'Teaching Certification', year: '2023' }
-  ];
+const CERTIFICATIONS = [
+  { name: 'LangChain & LangGraph Specialist', issuer: 'Self-directed', year: '2024' },
+  { name: 'MLOps Engineering', issuer: 'Industry experience', year: '2024' },
+  { name: 'Advanced Python for AI/ML', issuer: 'Professional development', year: '2023' },
+  { name: 'AI Ethics & Responsible AI', issuer: 'Teaching certification', year: '2023' },
+];
+
+export default function Experience() {
+  const timelineRef = useRef<HTMLDivElement>(null);
+
+  // The beam fills as the timeline scrolls through the viewport, so the rail
+  // reads as progress rather than decoration.
+  const { scrollYProgress } = useScroll({
+    target: timelineRef,
+    offset: ['start 75%', 'end 55%'],
+  });
+  const beamHeight = useSpring(
+    useTransform(scrollYProgress, [0, 1], ['0%', '100%']),
+    { stiffness: 90, damping: 26 }
+  );
 
   return (
-    <Section id="experience" background="glass">
-      <div className="py-12">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="text-teal-400 font-mono text-sm uppercase tracking-wider">
-            Professional Journey
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-6">
-            <span className="gradient-text">Experience &</span>
-            <br />
-            <span className="text-white">Education</span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            A journey through AI engineering, teaching, and continuous learning in 
-            cutting-edge technologies.
-          </p>
-        </motion.div>
+    <Section id="experience" divider>
+      <SectionHeader
+        kicker="Trajectory"
+        title={
+          <>
+            Experience &amp; <span className="text-gradient">education</span>
+          </>
+        }
+        description="From teaching the fundamentals to shipping the systems — a path through AI engineering, robotics, and the classroom."
+      />
 
-        {/* Experience Timeline */}
-        <div className="mb-20">
-          <motion.h3
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-            className="text-2xl font-bold text-white mb-12 flex items-center"
-          >
-            <Briefcase className="mr-3 text-blue-400" />
-            Professional Experience
-          </motion.h3>
-
-          <div className="relative">
-            {/* Timeline Line */}
-            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-400 via-purple-400 to-green-400 transform md:-translate-x-1/2" />
-
-            {experiences.map((exp, index) => (
-              <motion.div
-                key={exp.id}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                className={`relative flex items-center mb-12 ${
-                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                }`}
-              >
-                {/* Timeline Node */}
-                <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 rounded-full bg-gradient-to-r from-blue-400 to-purple-600 border-4 border-gray-900 z-10">
-                  {exp.status === 'current' && (
-                    <div className="absolute inset-0 rounded-full bg-blue-400 animate-ping opacity-75" />
-                  )}
-                </div>
-
-                {/* Experience Card */}
-                <div className={`w-full md:w-1/2 ml-12 md:ml-0 ${
-                  index % 2 === 0 ? 'md:pr-8' : 'md:pl-8'
-                }`}>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.2 }}
-                    className="glass-dark rounded-xl p-6 hover:bg-white/10 transition-all duration-300"
-                  >
-                    {/* Header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <div className={`p-2 rounded-lg bg-gradient-to-r ${exp.gradient}`}>
-                          <exp.icon className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-white text-lg">{exp.title}</h4>
-                          <p className={`${exp.color} font-medium`}>{exp.company}</p>
-                        </div>
-                      </div>
-                      {exp.status === 'current' && (
-                        <span className="px-2 py-1 text-xs font-bold bg-green-500/20 text-green-400 rounded-full border border-green-500/30">
-                          CURRENT
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Meta Info */}
-                    <div className="flex flex-wrap gap-4 mb-4 text-sm text-gray-400">
-                      <div className="flex items-center space-x-1">
-                        <Calendar size={14} />
-                        <span>{exp.period}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <MapPin size={14} />
-                        <span>{exp.location}</span>
-                      </div>
-                      <span className="px-2 py-1 bg-gray-700 rounded text-xs">{exp.type}</span>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-gray-300 mb-4 leading-relaxed">
-                      {exp.description}
-                    </p>
-
-                    {/* Achievements */}
-                    <div className="mb-4">
-                      <h5 className="font-semibold text-white mb-3 flex items-center">
-                        <Star className="w-4 h-4 text-yellow-400 mr-2" />
-                        Key Achievements
-                      </h5>
-                      <ul className="space-y-2">
-                        {exp.achievements.map((achievement, achievementIndex) => (
-                          <li key={achievementIndex} className="flex items-start space-x-2 text-sm text-gray-300">
-                            <ChevronRight className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
-                            <span>{achievement}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Technologies */}
-                    <div className="flex flex-wrap gap-2">
-                      {exp.technologies.map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-2 py-1 text-xs font-mono bg-white/10 rounded text-gray-300"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </motion.div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+      {/* ---------------------------------------------------------------- */}
+      {/* Timeline                                                          */}
+      {/* ---------------------------------------------------------------- */}
+      <div ref={timelineRef} className="relative mt-16 pl-8 sm:pl-12">
+        {/* Rail */}
+        <div className="absolute left-[7px] top-2 h-full w-px bg-white/[0.08] sm:left-[15px]">
+          <motion.div
+            style={{ height: beamHeight }}
+            className="w-px bg-gradient-to-b from-cyan-glow via-iris to-mint"
+          />
         </div>
 
-        {/* Education Section */}
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Education */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h3 className="text-2xl font-bold text-white mb-8 flex items-center">
-              <GraduationCap className="mr-3 text-purple-400" />
-              Education
-            </h3>
-
-            {education.map((edu, index) => (
-              <motion.div
-                key={edu.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="glass-dark rounded-xl p-6 mb-6"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 rounded-lg bg-purple-500/20 text-purple-400">
-                      <edu.icon className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-white text-lg">{edu.degree}</h4>
-                      <p className="text-purple-400 font-medium">{edu.institution}</p>
-                    </div>
-                  </div>
-                  {edu.status === 'current' && (
-                    <span className="px-2 py-1 text-xs font-bold bg-purple-500/20 text-purple-400 rounded-full border border-purple-500/30">
-                      CURRENT
-                    </span>
+        <div className="space-y-12">
+          {ROLES.map((role, i) => (
+            <Reveal key={role.id} delay={i * 0.1}>
+              <div className="relative">
+                {/* Node */}
+                <span
+                  className="absolute -left-8 top-1.5 flex h-[15px] w-[15px] items-center justify-center rounded-full border-2 bg-void-950 sm:-left-12"
+                  style={{ borderColor: role.accent }}
+                >
+                  {role.current && (
+                    <span
+                      className="absolute inset-0 rounded-full animate-pulse-ring"
+                      style={{ background: role.accent }}
+                    />
                   )}
-                </div>
+                  <span
+                    className="h-1.5 w-1.5 rounded-full"
+                    style={{ background: role.accent }}
+                  />
+                </span>
 
-                <p className="text-gray-300 mb-4 leading-relaxed">{edu.description}</p>
+                <article className="surface group rounded-2xl p-6 transition-all duration-500 hover:-translate-y-1 hover:border-white/[0.14] sm:p-7">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="flex items-center gap-3.5">
+                      <div
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-transform duration-500 group-hover:scale-110"
+                        style={{
+                          borderColor: `${role.accent}33`,
+                          background: `${role.accent}12`,
+                        }}
+                      >
+                        <role.icon size={18} style={{ color: role.accent }} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-ink">
+                          {role.title}
+                        </h3>
+                        <p
+                          className="text-sm font-medium"
+                          style={{ color: role.accent }}
+                        >
+                          {role.company}
+                        </p>
+                      </div>
+                    </div>
 
-                <div>
-                  <h5 className="font-semibold text-white mb-3">Focus Areas</h5>
-                  <ul className="space-y-2">
-                    {edu.focus.map((area, areaIndex) => (
-                      <li key={areaIndex} className="flex items-start space-x-2 text-sm text-gray-300">
-                        <ChevronRight className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
-                        <span>{area}</span>
+                    {role.current && (
+                      <span className="rounded-full border border-mint/25 bg-mint/[0.08] px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-mint">
+                        Current
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Meta */}
+                  <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[0.72rem] text-ink-faint">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Calendar size={12} />
+                      {role.period}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <MapPin size={12} />
+                      {role.location}
+                    </span>
+                    <span>{role.type}</span>
+                  </div>
+
+                  <p className="mt-5 leading-relaxed text-ink-dim">
+                    {role.summary}
+                  </p>
+
+                  <ul className="mt-5 space-y-2.5">
+                    {role.achievements.map((achievement) => (
+                      <li
+                        key={achievement}
+                        className="flex gap-3 text-sm leading-relaxed text-ink-dim"
+                      >
+                        <span
+                          className="mt-[0.5rem] h-1 w-1 shrink-0 rounded-full"
+                          style={{ background: role.accent }}
+                        />
+                        {achievement}
                       </li>
                     ))}
                   </ul>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
 
-          {/* Certifications & Learning */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            <h3 className="text-2xl font-bold text-white mb-8 flex items-center">
-              <Award className="mr-3 text-teal-400" />
-              Certifications & Learning
+                  <div className="mt-6 flex flex-wrap gap-1.5">
+                    {role.stack.map((tech) => (
+                      <span key={tech} className="chip">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Education + certifications                                        */}
+      {/* ---------------------------------------------------------------- */}
+      <div className="mt-20 grid gap-6 lg:grid-cols-2">
+        <Reveal direction="right">
+          <div className="surface h-full rounded-2xl p-7">
+            <h3 className="flex items-center gap-2.5 text-lg font-semibold text-ink">
+              <GraduationCap size={19} className="text-iris" />
+              Education
             </h3>
 
-            <div className="space-y-4 mb-8">
-              {certifications.map((cert, index) => (
-                <motion.div
-                  key={cert.name}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="glass-dark rounded-lg p-4 hover:bg-white/10 transition-colors duration-300"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-semibold text-white">{cert.name}</h4>
-                      <p className="text-sm text-gray-400">{cert.issuer}</p>
-                    </div>
-                    <span className="text-teal-400 font-mono text-sm">{cert.year}</span>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Continuous Learning */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              viewport={{ once: true }}
-              className="glass rounded-xl p-6 border-l-4 border-teal-400"
-            >
-              <h4 className="font-bold text-white mb-3 flex items-center">
-                <Award className="w-5 h-5 text-teal-400 mr-2" />
-                Continuous Learning Philosophy
+            <div className="mt-6">
+              <h4 className="text-base font-semibold text-ink">
+                {EDUCATION.degree}
               </h4>
-              <p className="text-gray-300 leading-relaxed">
-                I believe in staying at the forefront of AI and technology through continuous learning. 
-                I regularly explore advancements in AI, LLMs, and agent systems through research papers, 
-                courses, and hands-on projects. The rapidly evolving nature of AI requires constant 
-                adaptation and learning.
+              <p className="mt-1 font-mono text-[0.72rem] text-ink-faint">
+                {EDUCATION.institution} · {EDUCATION.period}
               </p>
-            </motion.div>
-          </motion.div>
-        </div>
+              <p className="mt-4 text-sm leading-relaxed text-ink-dim">
+                {EDUCATION.summary}
+              </p>
+
+              <ul className="mt-5 grid gap-2">
+                {EDUCATION.focus.map((area) => (
+                  <li
+                    key={area}
+                    className="flex gap-3 text-sm leading-relaxed text-ink-dim"
+                  >
+                    <span className="mt-[0.5rem] h-1 w-1 shrink-0 rounded-full bg-iris" />
+                    {area}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal direction="left" delay={0.1}>
+          <div className="surface h-full rounded-2xl p-7">
+            <h3 className="flex items-center gap-2.5 text-lg font-semibold text-ink">
+              <Award size={19} className="text-mint" />
+              Certifications &amp; continued learning
+            </h3>
+
+            <ul className="mt-6 space-y-px overflow-hidden rounded-xl border border-white/[0.07]">
+              {CERTIFICATIONS.map((cert) => (
+                <li
+                  key={cert.name}
+                  className="flex items-center justify-between gap-4 bg-white/[0.022] px-4 py-3.5 transition-colors duration-300 hover:bg-white/[0.06]"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-ink">{cert.name}</p>
+                    <p className="text-xs text-ink-faint">{cert.issuer}</p>
+                  </div>
+                  <span className="font-mono text-xs text-mint">
+                    {cert.year}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <p className="mt-6 text-sm leading-relaxed text-ink-faint">
+              The field moves faster than any curriculum. I read the papers,
+              rebuild the interesting results, and keep a running list of what
+              broke — that list has taught me more than any certificate.
+            </p>
+          </div>
+        </Reveal>
       </div>
     </Section>
   );
-};
-
-export default Experience;
+}

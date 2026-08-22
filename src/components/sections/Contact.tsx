@@ -1,320 +1,238 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { Mail, Github, Linkedin, FileText, Send, MessageCircle, Calendar, Download, Bot, Settings, Cpu, Lightbulb } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Bot,
+  Cpu,
+  Download,
+  Github,
+  Lightbulb,
+  Linkedin,
+  Mail,
+  Settings,
+} from 'lucide-react';
 import Section from '../ui/Section';
-import ResumeButton from '../ui/ResumeButton';
+import SectionHeader from '../ui/SectionHeader';
+import Reveal from '../ui/Reveal';
+import Magnetic from '../ui/Magnetic';
 import { handleResumeAction } from '@/utils/resumeUtils';
 
-const Contact = () => {
-  const contactInfo = [
-    {
-      icon: Mail,
-      title: 'Email',
-      value: 'fouadmahmoud281@gmail.com',
-      href: 'mailto:fouadmahmoud281@gmail.com',
-      color: 'text-red-400',
-      description: 'Best way to reach me for opportunities'
-    },
-    {
-      icon: Github,
-      title: 'GitHub',
-      value: '@fouadmahmoud281',
-      href: 'https://github.com/fouadmahmoud281',
-      color: 'text-gray-400',
-      description: 'View my code and contributions'
-    },
-    {
-      icon: Linkedin,
-      title: 'LinkedIn',
-      value: 'Connect with me',
-      href: 'https://www.linkedin.com/in/fouad-mahmoud-2832003/',
-      color: 'text-blue-400',
-      description: 'Professional networking and updates'
-    },
-    {
-      icon: FileText,
-      title: 'Resume',
-      value: 'Download CV',
-      href: '#',
-      color: 'text-green-400',
-      description: 'Detailed professional background',
-      action: 'resume'
-    }
-  ];
+const EMAIL = 'fouadmahmoud281@gmail.com';
 
-  const collaborationAreas = [
-    {
-      title: 'AI & Agentic Systems',
-      description: 'Building intelligent autonomous systems using LangChain, LangGraph, and LLMs',
-      icon: Bot,
-      color: 'text-blue-400',
-      keywords: ['Multi-agent systems', 'LangChain', 'LangGraph', 'AI automation']
-    },
-    {
-      title: 'MLOps & Production AI',
-      description: 'Deploying and scaling machine learning models in production environments',
-      icon: Settings,
-      color: 'text-green-400',
-      keywords: ['MLOps', 'Model deployment', 'AI infrastructure', 'Production systems']
-    },
-    {
-      title: 'Robotics Integration',
-      description: 'Combining AI with physical systems for real-world applications',
-      icon: Cpu,
-      color: 'text-purple-400',
-      keywords: ['Mechatronics', 'Control systems', 'Hardware-software integration', 'IoT']
-    },
-    {
-      title: 'Technical Consulting',
-      description: 'Strategic guidance on AI implementation and system architecture',
-      icon: Lightbulb,
-      color: 'text-orange-400',
-      keywords: ['AI strategy', 'System design', 'Technology consulting', 'Team mentoring']
-    }
-  ];
+const CHANNELS = [
+  {
+    label: 'Email',
+    value: EMAIL,
+    note: 'Fastest route — I read everything',
+    href: `mailto:${EMAIL}`,
+    icon: Mail,
+    accent: '#22d3ee',
+  },
+  {
+    label: 'LinkedIn',
+    value: 'fouad-mahmoud',
+    note: 'Professional background and updates',
+    href: 'https://www.linkedin.com/in/fouad-mahmoud-2832003/',
+    icon: Linkedin,
+    accent: '#7c5cff',
+  },
+  {
+    label: 'GitHub',
+    value: '@fouadmahmoud281',
+    note: 'Open work and experiments',
+    href: 'https://github.com/fouadmahmoud281',
+    icon: Github,
+    accent: '#34d399',
+  },
+];
 
-  const quickActions = [
-    {
-      title: 'Schedule a Call',
-      description: 'Book a 30-minute discussion about your AI project',
-      icon: Calendar,
-      href: '#',
-      color: 'text-blue-400',
-      action: 'Schedule'
-    },
-    {
-      title: 'View Portfolio',
-      description: 'Explore my projects and technical expertise',
-      icon: FileText,
-      href: '#projects',
-      color: 'text-purple-400',
-      action: 'Explore'
-    },
-    {
-      title: 'Download Resume',
-      description: 'Get a detailed overview of my experience',
-      icon: Download,
-      href: '#',
-      color: 'text-green-400',
-      action: 'Download',
-      type: 'resume'
-    }
-  ];
+const AREAS = [
+  {
+    title: 'AI & agentic systems',
+    body: 'Multi-agent architectures, orchestration, and the runtime around them.',
+    tags: ['LangGraph', 'LangChain', 'Tool-use'],
+    icon: Bot,
+    accent: '#22d3ee',
+  },
+  {
+    title: 'MLOps & production AI',
+    body: 'Getting models off the notebook and onto a reliable serving path.',
+    tags: ['Deployment', 'Evals', 'Monitoring'],
+    icon: Settings,
+    accent: '#34d399',
+  },
+  {
+    title: 'Robotics integration',
+    body: 'Where the model meets hardware, sensors, and a real control loop.',
+    tags: ['Mechatronics', 'Control', 'Embedded'],
+    icon: Cpu,
+    accent: '#fbbf24',
+  },
+  {
+    title: 'Technical consulting',
+    body: 'Architecture review, feasibility, and team mentoring on AI systems.',
+    tags: ['Strategy', 'Design', 'Mentoring'],
+    icon: Lightbulb,
+    accent: '#7c5cff',
+  },
+];
 
-  const scrollToProjects = () => {
-    document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
+export default function Contact() {
   return (
-    <Section id="contact" background="gradient">
-      <div className="py-12">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
+    <Section id="contact" divider>
+      <SectionHeader
+        kicker="Get in touch"
+        title={
+          <>
+            Let&apos;s build something that{' '}
+            <span className="text-gradient">thinks for itself</span>
+          </>
+        }
+        description="Agentic systems, retrieval pipelines, or an AI feature that needs to survive contact with real users — if it is interesting, I want to hear about it."
+      />
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Primary CTA                                                       */}
+      {/* ---------------------------------------------------------------- */}
+      <Reveal delay={0.1}>
+        <a
+          href={`mailto:${EMAIL}?subject=Project%20enquiry`}
+          className="group surface relative mt-16 flex flex-col items-start gap-6 overflow-hidden rounded-3xl px-8 py-10 transition-colors duration-500 hover:border-white/[0.16] sm:flex-row sm:items-center sm:justify-between sm:px-12 sm:py-14"
         >
-          <span className="text-teal-400 font-mono text-sm uppercase tracking-wider">
-            Get In Touch
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-6">
-            <span className="gradient-text">Let&apos;s Build</span>
-            <br />
-            <span className="text-white">Something Amazing</span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Ready to collaborate on your next AI project? I&apos;m always excited to work on 
-            innovative solutions that push the boundaries of what&apos;s possible.
-          </p>
-        </motion.div>
+          {/* Light that sweeps in from the left on hover */}
+          <span className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(110deg,transparent,rgba(34,211,238,0.09),transparent)] transition-transform duration-1000 group-hover:translate-x-full" />
 
-        <div className="grid lg:grid-cols-2 gap-12 mb-16">
-          {/* Contact Information */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h3 className="text-2xl font-bold text-white mb-8 flex items-center">
-              <MessageCircle className="mr-3 text-blue-400" />
-              Contact Information
-            </h3>
-
-            <div className="space-y-6">
-              {contactInfo.map((contact, index) => (
-                <motion.button
-                  key={contact.title}
-                  onClick={() => {
-                    if (contact.action === 'resume') {
-                      handleResumeAction('download');
-                    } else {
-                      window.open(contact.href, contact.href.startsWith('http') ? '_blank' : '_self');
-                    }
-                  }}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  whileHover={{ scale: 1.02, x: 10 }}
-                  className="flex items-center space-x-4 p-6 glass-dark rounded-xl hover:bg-white/10 transition-all duration-300 group cursor-pointer"
-                >
-                  <div className={`p-3 rounded-lg ${contact.color} bg-white/10 group-hover:scale-110 transition-transform duration-300`}>
-                    <contact.icon size={24} />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-white text-lg mb-1">{contact.title}</h4>
-                    <p className={`${contact.color} font-medium mb-1`}>{contact.value}</p>
-                    <p className="text-gray-400 text-sm">{contact.description}</p>
-                  </div>
-                  <Send className="w-5 h-5 text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
-                </motion.button>
-              ))}
-            </div>
-
-            {/* Quick Actions */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              viewport={{ once: true }}
-              className="mt-12"
-            >
-              <h4 className="text-lg font-semibold text-white mb-6">Quick Actions</h4>
-              <div className="space-y-4">
-                {quickActions.map((action) => (
-                  <motion.button
-                    key={action.title}
-                    onClick={() => {
-                      if (action.type === 'resume') {
-                        handleResumeAction('download');
-                      } else if (action.href === '#projects') {
-                        scrollToProjects();
-                      } else {
-                        window.open(action.href, '_blank');
-                      }
-                    }}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full flex items-center justify-between p-4 glass border border-gray-600 rounded-lg hover:border-gray-400 transition-all duration-300 group"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <action.icon className={`w-5 h-5 ${action.color}`} />
-                      <div className="text-left">
-                        <h5 className="font-medium text-white">{action.title}</h5>
-                        <p className="text-sm text-gray-400">{action.description}</p>
-                      </div>
-                    </div>
-                    <span className={`text-sm font-medium ${action.color} group-hover:translate-x-1 transition-transform duration-300`}>
-                      {action.action} →
-                    </span>
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* Collaboration Areas */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            <h3 className="text-2xl font-bold text-white mb-8">Collaboration Areas</h3>
-            <p className="text-gray-300 mb-8 leading-relaxed">
-              I&apos;m passionate about working on projects that involve cutting-edge AI technologies 
-              and real-world applications. Here are areas where I can add the most value:
+          <div className="relative">
+            <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-cyan-glow">
+              Start a conversation
             </p>
-
-            <div className="space-y-6">
-              {collaborationAreas.map((area, index) => (
-                <motion.div
-                  key={area.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="glass-dark rounded-xl p-6 hover:bg-white/10 transition-colors duration-300"
-                >
-                  <div className="flex items-start space-x-4">
-                    <div className={`p-3 rounded-lg ${area.color} bg-white/10`}>
-                      <area.icon size={24} />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-white text-lg mb-2">{area.title}</h4>
-                      <p className="text-gray-300 mb-4 leading-relaxed">{area.description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {area.keywords.map((keyword) => (
-                          <span
-                            key={keyword}
-                            className="px-2 py-1 text-xs font-mono bg-white/10 rounded text-gray-400"
-                          >
-                            {keyword}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center glass rounded-2xl p-12 border border-white/10"
-        >
-          <h3 className="text-3xl font-bold text-white mb-4">Ready to Start Your AI Project?</h3>
-          <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Whether you&apos;re looking to implement agentic systems, optimize your ML workflows, 
-            or integrate AI into your existing products, I&apos;m here to help bring your vision to life.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <motion.a
-              href="mailto:fouadmahmoud281@gmail.com"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center justify-center space-x-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
-            >
-              <Mail size={20} />
-              <span>Send me an email</span>
-            </motion.a>
-            <motion.a
-              href="https://github.com/fouadmahmoud281"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center justify-center space-x-2 px-8 py-4 glass border border-gray-600 text-gray-300 rounded-lg font-semibold transition-all duration-300 hover:border-gray-400 hover:text-white"
-            >
-              <Github size={20} />
-              <span>View my work</span>
-            </motion.a>
+            <p className="mt-3 break-all font-display text-2xl font-semibold text-ink transition-colors duration-300 group-hover:text-gradient sm:text-4xl">
+              {EMAIL}
+            </p>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1 }}
-            viewport={{ once: true }}
-            className="mt-8 text-gray-400 text-sm"
-          >
-            <p>&ldquo;Innovative solutions require dumb mistakes&rdquo; - Let&apos;s make them together! 💡</p>
-          </motion.div>
-        </motion.div>
+          <span className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/15 text-ink transition-all duration-500 group-hover:border-cyan-glow group-hover:bg-cyan-glow/10">
+            <ArrowUpRight
+              size={22}
+              className="transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1"
+            />
+          </span>
+        </a>
+      </Reveal>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Channels                                                          */}
+      {/* ---------------------------------------------------------------- */}
+      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+        {CHANNELS.map((channel, i) => (
+          <Reveal key={channel.label} delay={0.16 + i * 0.07}>
+            <a
+              href={channel.href}
+              target={channel.href.startsWith('http') ? '_blank' : undefined}
+              rel={
+                channel.href.startsWith('http')
+                  ? 'noopener noreferrer'
+                  : undefined
+              }
+              className="surface group flex h-full flex-col rounded-2xl p-6 transition-all duration-500 hover:-translate-y-1 hover:border-white/[0.16]"
+            >
+              <div className="flex items-center justify-between">
+                <span
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border transition-transform duration-500 group-hover:scale-110"
+                  style={{
+                    borderColor: `${channel.accent}33`,
+                    background: `${channel.accent}12`,
+                  }}
+                >
+                  <channel.icon size={17} style={{ color: channel.accent }} />
+                </span>
+                <ArrowUpRight
+                  size={15}
+                  className="text-ink-faint transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-ink"
+                />
+              </div>
+
+              <p className="mt-5 text-sm font-semibold text-ink">
+                {channel.label}
+              </p>
+              <p
+                className="mt-1 break-all font-mono text-xs"
+                style={{ color: channel.accent }}
+              >
+                {channel.value}
+              </p>
+              <p className="mt-2.5 text-xs leading-relaxed text-ink-faint">
+                {channel.note}
+              </p>
+            </a>
+          </Reveal>
+        ))}
       </div>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Where I add value                                                 */}
+      {/* ---------------------------------------------------------------- */}
+      <div className="mt-20">
+        <Reveal>
+          <h3 className="text-center text-2xl font-semibold text-ink">
+            Where I add the most value
+          </h3>
+        </Reveal>
+
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {AREAS.map((area, i) => (
+            <Reveal key={area.title} delay={i * 0.08}>
+              <div className="surface group h-full rounded-2xl p-6 transition-all duration-500 hover:-translate-y-1">
+                <area.icon
+                  size={20}
+                  style={{ color: area.accent }}
+                  className="transition-transform duration-500 group-hover:scale-110"
+                />
+                <h4 className="mt-5 font-semibold text-ink">{area.title}</h4>
+                <p className="mt-2.5 text-sm leading-relaxed text-ink-faint">
+                  {area.body}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {area.tags.map((tag) => (
+                    <span key={tag} className="chip">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Closing actions                                                   */}
+      {/* ---------------------------------------------------------------- */}
+      <Reveal delay={0.2}>
+        <div className="mt-16 flex flex-col items-center gap-6 text-center">
+          <div className="flex flex-wrap justify-center gap-4">
+            <Magnetic>
+              <a href={`mailto:${EMAIL}`} className="btn btn-primary">
+                <Mail size={17} />
+                Send an email
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <button
+                onClick={() => handleResumeAction('download')}
+                className="btn btn-ghost"
+              >
+                <Download size={17} />
+                Download CV
+              </button>
+            </Magnetic>
+          </div>
+
+          <p className="font-mono text-sm text-ink-faint">
+            &ldquo;Innovative solutions require dumb mistakes.&rdquo;
+          </p>
+        </div>
+      </Reveal>
     </Section>
   );
-};
-
-export default Contact;
+}

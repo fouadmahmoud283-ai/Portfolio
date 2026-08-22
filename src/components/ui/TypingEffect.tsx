@@ -1,71 +1,80 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { usePrefersReducedMotion } from '@/hooks/useMotionPrefs';
 
-interface TypingEffectProps {
+type Props = {
   texts: string[];
-  speed?: number;
+  typeSpeed?: number;
   deleteSpeed?: number;
-  delayBetweenTexts?: number;
+  holdDuration?: number;
   className?: string;
-}
+};
 
-const TypingEffect = ({ 
-  texts, 
-  speed = 100, 
-  deleteSpeed = 50, 
-  delayBetweenTexts = 2000,
-  className = ''
-}: TypingEffectProps) => {
-  const [currentTextIndex, setCurrentTextIndex] = useState(0);
-  const [currentText, setCurrentText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
+type Phase = 'typing' | 'holding' | 'deleting';
+
+/**
+ * Cycles through phrases with a terminal-style type/delete effect.
+ *
+ * Runs as a small state machine — each phase schedules exactly one timeout,
+ * which keeps the cadence even and avoids overlapping timers.
+ */
+export default function TypingEffect({
+  texts,
+  typeSpeed = 62,
+  deleteSpeed = 28,
+  holdDuration = 2200,
+  className = '',
+}: Props) {
+  const reduced = usePrefersReducedMotion();
+  const [index, setIndex] = useState(0);
+  const [text, setText] = useState('');
+  const [phase, setPhase] = useState<Phase>('typing');
 
   useEffect(() => {
-    const handleTyping = () => {
-      const currentFullText = texts[currentTextIndex];
+    if (reduced) return;
 
-      if (isPaused) {
-        setTimeout(() => setIsPaused(false), delayBetweenTexts);
-        return;
-      }
+    const full = texts[index % texts.length];
 
-      if (!isDeleting) {
-        // Typing
-        if (currentText.length < currentFullText.length) {
-          setCurrentText(currentFullText.slice(0, currentText.length + 1));
-        } else {
-          // Finished typing, start deleting after delay
-          setIsPaused(true);
-          setIsDeleting(true);
-        }
-      } else {
-        // Deleting
-        if (currentText.length > 0) {
-          setCurrentText(currentText.slice(0, -1));
-        } else {
-          // Finished deleting, move to next text
-          setIsDeleting(false);
-          setCurrentTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
-        }
-      }
+    const schedule = (fn: () => void, ms: number) => {
+      const timer = setTimeout(fn, ms);
+      return () => clearTimeout(timer);
     };
 
-    const timer = setTimeout(
-      handleTyping,
-      isPaused ? delayBetweenTexts : isDeleting ? deleteSpeed : speed
-    );
+    if (phase === 'typing') {
+      if (text.length < full.length) {
+        return schedule(
+          () => setText(full.slice(0, text.length + 1)),
+          typeSpeed
+        );
+      }
+      return schedule(() => setPhase('holding'), 0);
+    }
 
-    return () => clearTimeout(timer);
-  }, [currentText, currentTextIndex, isDeleting, isPaused, texts, speed, deleteSpeed, delayBetweenTexts]);
+    if (phase === 'holding') {
+      return schedule(() => setPhase('deleting'), holdDuration);
+    }
+
+    if (text.length > 0) {
+      return schedule(() => setText(full.slice(0, text.length - 1)), deleteSpeed);
+    }
+
+    return schedule(() => {
+      setIndex((i) => (i + 1) % texts.length);
+      setPhase('typing');
+    }, 240);
+  }, [text, phase, index, texts, typeSpeed, deleteSpeed, holdDuration, reduced]);
+
+  // Reduced motion gets the first phrase, statically.
+  const output = reduced ? texts[0] : text;
 
   return (
     <span className={className}>
-      {currentText}
-      <span className="animate-pulse">|</span>
+      {output}
+      <span
+        aria-hidden
+        className="ml-0.5 inline-block h-[1em] w-[2px] translate-y-[0.12em] bg-cyan-glow align-middle animate-blink"
+      />
     </span>
   );
-};
-
-export default TypingEffect;
+}
