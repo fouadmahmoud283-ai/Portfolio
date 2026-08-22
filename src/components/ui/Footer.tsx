@@ -1,187 +1,115 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { Github, Linkedin, Mail, FileText, ArrowUp } from 'lucide-react';
+import { ArrowUp, Github, Linkedin, Mail } from 'lucide-react';
+import { scrollToSection, scrollToTop } from '@/lib/scroll';
 
-const Footer = () => {
-  const currentYear = new Date().getFullYear();
-  
-  const socialLinks = [
-    { 
-      href: 'https://github.com/fouadmahmoud281', 
-      icon: Github, 
-      label: 'GitHub',
-      color: 'hover:text-gray-300'
-    },
-    { 
-      href: 'https://www.linkedin.com/in/fouad-mahmoud-2832003/', 
-      icon: Linkedin, 
-      label: 'LinkedIn',
-      color: 'hover:text-blue-400'
-    },
-    { 
-      href: 'mailto:fouadmahmoud281@gmail.com', 
-      icon: Mail, 
-      label: 'Email',
-      color: 'hover:text-red-400'
-    },
-    { 
-      href: '/resume.pdf', 
-      icon: FileText, 
-      label: 'Resume',
-      color: 'hover:text-green-400'
-    },
-  ];
+const LINKS = [
+  { id: 'about', label: 'About' },
+  { id: 'pipeline', label: 'Approach' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'projects', label: 'Work' },
+  { id: 'experience', label: 'Path' },
+  { id: 'contact', label: 'Contact' },
+];
 
-  const quickLinks = [
-    { href: '#home', label: 'Home' },
-    { href: '#about', label: 'About' },
-    { href: '#skills', label: 'Skills' },
-    { href: '#projects', label: 'Projects' },
-    { href: '#experience', label: 'Experience' },
-    { href: '#contact', label: 'Contact' },
-  ];
+const SOCIALS = [
+  { label: 'GitHub', icon: Github, href: 'https://github.com/fouadmahmoud281' },
+  {
+    label: 'LinkedIn',
+    icon: Linkedin,
+    href: 'https://www.linkedin.com/in/fouad-mahmoud-2832003/',
+  },
+  { label: 'Email', icon: Mail, href: 'mailto:fouadmahmoud281@gmail.com' },
+];
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
+export default function Footer() {
   return (
-    <footer className="relative bg-gradient-to-t from-gray-900 to-transparent border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid md:grid-cols-4 gap-8">
-          {/* Brand Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-            className="md:col-span-2"
-          >
-            <div className="mb-6">
-              <h3 className="text-2xl font-bold gradient-text font-mono mb-2">
-                &lt;Fouad Mahmoud/&gt;
-              </h3>
-              <p className="text-gray-300 leading-relaxed max-w-md">
-                AI & Agentic Systems Engineer passionate about building intelligent autonomous systems 
-                that bridge the digital and physical worlds.
-              </p>
+    <footer className="relative border-t border-white/[0.07]">
+      <div className="container-x py-14">
+        <div className="grid gap-10 md:grid-cols-12">
+          {/* Identity */}
+          <div className="md:col-span-5">
+            <p className="font-display text-xl font-semibold text-ink">
+              Fouad Mahmoud
+            </p>
+            <p className="mt-3 max-w-sm text-sm leading-relaxed text-ink-faint">
+              AI &amp; Agentic Systems Engineer building autonomous systems that
+              plan, retrieve, act, and correct themselves — currently at
+              Obelion.AI.
+            </p>
+            <div className="mt-6 flex items-center gap-2">
+              {SOCIALS.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target={social.href.startsWith('http') ? '_blank' : undefined}
+                  rel={
+                    social.href.startsWith('http')
+                      ? 'noopener noreferrer'
+                      : undefined
+                  }
+                  aria-label={social.label}
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.09] text-ink-faint transition-colors duration-300 hover:border-cyan-glow/50 hover:text-cyan-glow"
+                >
+                  <social.icon size={16} />
+                </a>
+              ))}
             </div>
-            
-            <div className="mb-6">
-              <p className="text-sm text-gray-400 mb-2">Currently working at:</p>
-              <p className="text-teal-400 font-semibold">Obelion.Ai</p>
-            </div>
+          </div>
 
-            <blockquote className="text-sm text-gray-400 italic border-l-2 border-blue-500 pl-4">
-              &ldquo;Innovative solutions require dumb mistakes&rdquo; 💡
-            </blockquote>
-          </motion.div>
-
-          {/* Quick Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            viewport={{ once: true }}
-          >
-            <h4 className="text-lg font-semibold text-white mb-4">Quick Links</h4>
-            <ul className="space-y-2">
-              {quickLinks.map((link) => (
-                <li key={link.label}>
+          {/* Nav */}
+          <div className="md:col-span-3">
+            <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-ink-faint">
+              Sections
+            </p>
+            <ul className="mt-5 space-y-2.5">
+              {LINKS.map((link) => (
+                <li key={link.id}>
                   <button
-                    onClick={() => scrollToSection(link.href)}
-                    className="text-gray-400 hover:text-white transition-colors duration-200 text-sm"
+                    onClick={() => scrollToSection(`#${link.id}`)}
+                    className="text-sm text-ink-dim transition-colors duration-300 hover:text-cyan-glow"
                   >
                     {link.label}
                   </button>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
-          {/* Connect */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            <h4 className="text-lg font-semibold text-white mb-4">Connect</h4>
-            <div className="space-y-3">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target={social.href.startsWith('http') ? '_blank' : '_self'}
-                  rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className={`flex items-center space-x-2 text-gray-400 ${social.color} transition-colors duration-200 text-sm group`}
-                >
-                  <social.icon size={16} className="group-hover:scale-110 transition-transform duration-200" />
-                  <span>{social.label}</span>
-                </a>
-              ))}
-            </div>
-
-            <div className="mt-6">
-              <p className="text-gray-400 text-sm mb-2">Email me directly:</p>
-              <a
-                href="mailto:fouadmahmoud281@gmail.com"
-                className="text-blue-400 hover:text-blue-300 transition-colors duration-200 text-sm font-medium"
-              >
-                fouadmahmoud281@gmail.com
-              </a>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Divider */}
-        <div className="border-t border-white/10 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            {/* Copyright */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="flex items-center space-x-2 text-gray-400 text-sm mb-4 md:mb-0"
+          {/* Direct */}
+          <div className="md:col-span-4">
+            <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-ink-faint">
+              Direct
+            </p>
+            <a
+              href="mailto:fouadmahmoud281@gmail.com"
+              className="mt-5 block break-all text-sm text-ink transition-colors duration-300 hover:text-cyan-glow"
             >
-              <span>© {currentYear} Fouad Mahmoud. </span>
-            </motion.div>
-
-            {/* Back to Top */}
-            <motion.button
-              onClick={scrollToTop}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors duration-200 text-sm group"
-            >
-              <span>Back to top</span>
-              <ArrowUp size={16} className="group-hover:-translate-y-1 transition-transform duration-200" />
-            </motion.button>
+              fouadmahmoud281@gmail.com
+            </a>
+            <p className="mt-6 border-l border-white/[0.09] pl-4 text-sm italic leading-relaxed text-ink-faint">
+              &ldquo;Innovative solutions require dumb mistakes.&rdquo;
+            </p>
           </div>
         </div>
 
-      </div>
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.07] pt-7 sm:flex-row">
+          <p className="font-mono text-xs text-ink-faint">
+            © {new Date().getFullYear()} Fouad Mahmoud
+          </p>
 
-      {/* Background Pattern */}
-      <div className="absolute inset-0 z-0 opacity-5">
-        <div className="absolute inset-0"
-             style={{
-               backgroundImage: `radial-gradient(circle at 25% 25%, #3B82F6 0%, transparent 50%), 
-                                 radial-gradient(circle at 75% 75%, #8B5CF6 0%, transparent 50%)`,
-             }}
-        />
+          <button
+            onClick={scrollToTop}
+            className="group inline-flex items-center gap-2 font-mono text-xs text-ink-faint transition-colors duration-300 hover:text-cyan-glow"
+          >
+            Back to top
+            <ArrowUp
+              size={14}
+              className="transition-transform duration-300 group-hover:-translate-y-0.5"
+            />
+          </button>
+        </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

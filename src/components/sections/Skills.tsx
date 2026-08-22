@@ -1,255 +1,244 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Bot, Database, Code, Cpu, Brain, Settings } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Bot, Brain, Code, Cpu, Settings } from 'lucide-react';
 import Section from '../ui/Section';
+import SectionHeader from '../ui/SectionHeader';
+import Reveal from '../ui/Reveal';
 
-const Skills = () => {
-  const [activeCategory, setActiveCategory] = useState('ai');
+type Skill = { name: string; level: number; note: string };
 
-  const skillCategories = {
-    ai: {
-      title: 'AI & Agentic Systems',
-      icon: Bot,
-      color: 'text-blue-400',
-      borderColor: 'border-blue-400',
-      skills: [
-        { name: 'LangChain', level: 95, description: 'Advanced framework for LLM applications' },
-        { name: 'LangGraph', level: 90, description: 'Multi-agent workflow orchestration' },
-        { name: 'LangSmith', level: 85, description: 'Debugging and monitoring LLM apps' },
-        { name: 'OpenAI API', level: 95, description: 'GPT models and embeddings integration' },
-        { name: 'Hugging Face', level: 88, description: 'Model deployment and fine-tuning' },
-        { name: 'Vector Databases', level: 92, description: 'Semantic search and retrieval' },
-        { name: 'Fine-tuning', level: 82, description: 'Custom model optimization' },
-        { name: 'Multi-Agent Architecture', level: 90, description: 'Coordinated AI agent systems' }
-      ]
-    },
-    programming: {
-      title: 'Programming & Development',
-      icon: Code,
-      color: 'text-green-400',
-      borderColor: 'border-green-400',
-      skills: [
-        { name: 'Python', level: 95, description: 'Primary language for AI/ML development' },
-        { name: 'JavaScript/TypeScript', level: 85, description: 'Full-stack web development' },
-        { name: 'React/Next.js', level: 82, description: 'Modern frontend frameworks' },
-        { name: 'FastAPI', level: 90, description: 'High-performance API development' },
-        { name: 'Flask', level: 88, description: 'Lightweight web frameworks' },
-        { name: 'Git/GitHub', level: 92, description: 'Version control and collaboration' },
-        { name: 'Docker', level: 85, description: 'Containerization and deployment' },
-        { name: 'REST APIs', level: 90, description: 'API design and integration' }
-      ]
-    },
-    ml: {
-      title: 'Machine Learning & Data',
-      icon: Brain,
-      color: 'text-purple-400',
-      borderColor: 'border-purple-400',
-      skills: [
-        { name: 'TensorFlow', level: 85, description: 'Deep learning framework' },
-        { name: 'PyTorch', level: 82, description: 'Research-focused ML framework' },
-        { name: 'Scikit-learn', level: 90, description: 'Traditional machine learning' },
-        { name: 'Pandas/NumPy', level: 92, description: 'Data manipulation and analysis' },
-        { name: 'MLOps', level: 88, description: 'ML model deployment and monitoring' },
-        { name: 'Streamlit', level: 90, description: 'Rapid ML app development' },
-        { name: 'Jupyter', level: 95, description: 'Interactive development environment' },
-        { name: 'Data Pipelines', level: 85, description: 'ETL and data processing' }
-      ]
-    },
-    robotics: {
-      title: 'Robotics & Mechatronics',
-      icon: Cpu,
-      color: 'text-teal-400',
-      borderColor: 'border-teal-400',
-      skills: [
-        { name: 'Control Systems', level: 80, description: 'System dynamics and control theory' },
-        { name: 'Sensors Integration', level: 85, description: 'Hardware-software interfaces' },
-        { name: 'Actuators', level: 78, description: 'Motion control and automation' },
-        { name: 'Linux', level: 88, description: 'Real-time systems and embedded computing' },
-        { name: 'Mechatronics Design', level: 82, description: 'Interdisciplinary system design' },
-        { name: 'ROS (Robot Operating System)', level: 75, description: 'Robotics middleware' },
-        { name: 'Embedded Systems', level: 80, description: 'Microcontroller programming' },
-        { name: 'CAD/CAM', level: 70, description: 'Mechanical design and manufacturing' }
-      ]
-    },
-    tools: {
-      title: 'Tools & Platforms',
-      icon: Settings,
-      color: 'text-orange-400',
-      borderColor: 'border-orange-400',
-      skills: [
-        { name: 'AWS', level: 82, description: 'Cloud infrastructure and services' },
-        { name: 'MongoDB', level: 88, description: 'NoSQL database management' },
-        { name: 'Redis', level: 85, description: 'Caching and session management' },
-        { name: 'Vercel', level: 90, description: 'Frontend deployment platform' },
-        { name: 'VS Code', level: 95, description: 'Development environment' },
-        { name: 'Postman', level: 88, description: 'API testing and documentation' },
-        { name: 'Figma', level: 75, description: 'UI/UX design and prototyping' },
-        { name: 'CI/CD', level: 80, description: 'Automated deployment pipelines' }
-      ]
-    }
-  };
-
-  const categories = Object.keys(skillCategories) as Array<keyof typeof skillCategories>;
-
-  return (
-    <Section id="skills" className="py-20">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="text-center mb-16"
-      >
-        <span className="text-teal-400 font-mono text-sm uppercase tracking-wider">
-          Technical Expertise
-        </span>
-        <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-6">
-          <span className="gradient-text">Skills &</span>
-          <br />
-          <span className="text-white">Technologies</span>
-        </h2>
-        <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          A comprehensive toolkit for building intelligent autonomous systems, 
-          from conception to deployment.
-        </p>
-      </motion.div>
-
-      {/* Category Tabs */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        viewport={{ once: true }}
-        className="flex flex-wrap justify-center gap-4 mb-12"
-      >
-        {categories.map((category) => {
-          const categoryData = skillCategories[category];
-          const isActive = activeCategory === category;
-          
-          return (
-            <motion.button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-lg border-2 transition-all duration-300 ${
-                isActive
-                  ? `${categoryData.borderColor} bg-white/10 text-white`
-                  : 'border-gray-600 hover:border-gray-400 text-gray-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <categoryData.icon size={20} className={isActive ? categoryData.color : ''} />
-              <span className="font-medium">{categoryData.title}</span>
-            </motion.button>
-          );
-        })}
-      </motion.div>
-
-      {/* Skills Grid */}
-      <motion.div
-        key={activeCategory}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
-      >
-        {skillCategories[activeCategory as keyof typeof skillCategories].skills.map((skill, index) => (
-          <motion.div
-            key={skill.name}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="glass-dark rounded-xl p-6 hover:bg-white/10 transition-all duration-300 group"
-          >
-            {/* Skill Header */}
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-white text-lg">{skill.name}</h3>
-              <span className={`text-sm font-mono ${skillCategories[activeCategory as keyof typeof skillCategories].color}`}>
-                {skill.level}%
-              </span>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="mb-4">
-              <div className="w-full bg-gray-700 rounded-full h-2">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${skill.level}%` }}
-                  transition={{ duration: 1, delay: index * 0.1 + 0.5 }}
-                  className={`h-2 rounded-full bg-gradient-to-r ${
-                    activeCategory === 'ai' ? 'from-blue-400 to-blue-600' :
-                    activeCategory === 'programming' ? 'from-green-400 to-green-600' :
-                    activeCategory === 'ml' ? 'from-purple-400 to-purple-600' :
-                    activeCategory === 'robotics' ? 'from-teal-400 to-teal-600' :
-                    'from-orange-400 to-orange-600'
-                  }`}
-                />
-              </div>
-            </div>
-
-            {/* Description */}
-            <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors duration-300">
-              {skill.description}
-            </p>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      {/* Specializations */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        viewport={{ once: true }}
-        className="mt-20 text-center"
-      >
-        <h3 className="text-2xl font-bold text-white mb-8">Core Specializations</h3>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            {
-              icon: Bot,
-              title: 'Agentic Systems',
-              description: 'Multi-agent architectures that can perceive, reason, and act autonomously',
-              color: 'text-blue-400'
-            },
-            {
-              icon: Brain,
-              title: 'LLM Applications',
-              description: 'Fine-tuned and optimized LLM implementations for specific domains',
-              color: 'text-purple-400'
-            },
-            {
-              icon: Cpu,
-              title: 'Robotics Integration',
-              description: 'Bridging AI with physical systems for real-world applications',
-              color: 'text-teal-400'
-            },
-            {
-              icon: Database,
-              title: 'Data Pipelines',
-              description: 'End-to-end workflows for ingesting, processing, and serving data',
-              color: 'text-green-400'
-            }
-          ].map((spec, index) => (
-            <motion.div
-              key={spec.title}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="glass rounded-xl p-6 hover:scale-105 transition-transform duration-300"
-            >
-              <spec.icon className={`w-12 h-12 ${spec.color} mx-auto mb-4`} />
-              <h4 className="font-semibold text-white mb-3">{spec.title}</h4>
-              <p className="text-gray-400 text-sm leading-relaxed">{spec.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-    </Section>
-  );
+type Category = {
+  id: string;
+  title: string;
+  short: string;
+  icon: typeof Bot;
+  color: string;
+  skills: Skill[];
 };
 
-export default Skills;
+const CATEGORIES: Category[] = [
+  {
+    id: 'ai',
+    title: 'AI & Agentic Systems',
+    short: 'Agents',
+    icon: Bot,
+    color: '#22d3ee',
+    skills: [
+      { name: 'LangChain', level: 95, note: 'Composable LLM application framework' },
+      { name: 'LangGraph', level: 90, note: 'Stateful multi-agent orchestration' },
+      { name: 'LangSmith', level: 85, note: 'Tracing, evals, and regression suites' },
+      { name: 'OpenAI API', level: 95, note: 'Chat, embeddings, structured outputs' },
+      { name: 'Hugging Face', level: 88, note: 'Model hosting and fine-tuning' },
+      { name: 'Vector Databases', level: 92, note: 'Hybrid retrieval and reranking' },
+      { name: 'Fine-tuning', level: 82, note: 'LoRA and domain adaptation' },
+      { name: 'Multi-Agent Design', level: 90, note: 'Supervisor and critic topologies' },
+    ],
+  },
+  {
+    id: 'engineering',
+    title: 'Programming & Backend',
+    short: 'Engineering',
+    icon: Code,
+    color: '#34d399',
+    skills: [
+      { name: 'Python', level: 95, note: 'Primary language across every system' },
+      { name: 'TypeScript', level: 85, note: 'Full-stack product surfaces' },
+      { name: 'FastAPI', level: 90, note: 'Async, typed, production APIs' },
+      { name: 'React / Next.js', level: 82, note: 'App Router, RSC, streaming UI' },
+      { name: 'Flask', level: 88, note: 'Lightweight service endpoints' },
+      { name: 'Docker', level: 85, note: 'Reproducible builds and deploys' },
+      { name: 'Git / GitHub', level: 92, note: 'Trunk-based workflows and review' },
+      { name: 'REST APIs', level: 90, note: 'Contract design and versioning' },
+    ],
+  },
+  {
+    id: 'ml',
+    title: 'Machine Learning & Data',
+    short: 'ML / Data',
+    icon: Brain,
+    color: '#7c5cff',
+    skills: [
+      { name: 'PyTorch', level: 82, note: 'Research and custom training loops' },
+      { name: 'TensorFlow', level: 85, note: 'Production model graphs' },
+      { name: 'Scikit-learn', level: 90, note: 'Classical baselines that hold up' },
+      { name: 'Pandas / NumPy', level: 92, note: 'Feature and analysis pipelines' },
+      { name: 'MLOps', level: 88, note: 'Deployment, drift, and monitoring' },
+      { name: 'Streamlit', level: 90, note: 'Fast internal tooling' },
+      { name: 'Jupyter', level: 95, note: 'Exploration and reporting' },
+      { name: 'Data Pipelines', level: 85, note: 'ETL and ingestion at scale' },
+    ],
+  },
+  {
+    id: 'robotics',
+    title: 'Robotics & Mechatronics',
+    short: 'Robotics',
+    icon: Cpu,
+    color: '#fbbf24',
+    skills: [
+      { name: 'Control Systems', level: 80, note: 'Dynamics, feedback, stability' },
+      { name: 'Sensor Integration', level: 85, note: 'Hardware-software interfaces' },
+      { name: 'Linux', level: 88, note: 'Real-time and embedded targets' },
+      { name: 'Actuators', level: 78, note: 'Motion control and automation' },
+      { name: 'Mechatronic Design', level: 82, note: 'Interdisciplinary systems' },
+      { name: 'ROS', level: 75, note: 'Robotics middleware and nodes' },
+      { name: 'Embedded Systems', level: 80, note: 'Microcontroller firmware' },
+      { name: 'CAD / CAM', level: 70, note: 'Mechanical design for manufacture' },
+    ],
+  },
+  {
+    id: 'platform',
+    title: 'Tools & Platforms',
+    short: 'Platform',
+    icon: Settings,
+    color: '#fb7185',
+    skills: [
+      { name: 'AWS', level: 82, note: 'Compute, storage, and networking' },
+      { name: 'MongoDB', level: 88, note: 'Document modelling and indexing' },
+      { name: 'Redis', level: 85, note: 'Caching and rate limiting' },
+      { name: 'Vercel', level: 90, note: 'Edge deploys and previews' },
+      { name: 'CI/CD', level: 80, note: 'Automated test and release gates' },
+      { name: 'Postman', level: 88, note: 'API contracts and collections' },
+      { name: 'VS Code', level: 95, note: 'Daily driver, heavily customised' },
+      { name: 'Figma', level: 75, note: 'Interface design and handoff' },
+    ],
+  },
+];
+
+/** Level → filled segments, so proficiency reads at a glance instead of as a number. */
+const segmentsFor = (level: number) => Math.max(1, Math.round(level / 20));
+
+const TIER_LABEL = (level: number) =>
+  level >= 90 ? 'Expert' : level >= 80 ? 'Advanced' : 'Proficient';
+
+export default function Skills() {
+  const [active, setActive] = useState(CATEGORIES[0].id);
+  const category = CATEGORIES.find((c) => c.id === active) ?? CATEGORIES[0];
+
+  return (
+    <Section id="skills" divider>
+      <SectionHeader
+        kicker="Capabilities"
+        title={
+          <>
+            The <span className="text-gradient">toolkit</span>
+          </>
+        }
+        description="Depth where it counts for agentic systems, breadth enough to own a feature end to end — from the control loop to the deploy."
+      />
+
+      {/* Category selector */}
+      <Reveal delay={0.1}>
+        <div
+          role="tablist"
+          aria-label="Skill categories"
+          className="mx-auto mt-14 flex max-w-fit flex-wrap justify-center gap-1.5 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-1.5 backdrop-blur-md"
+        >
+          {CATEGORIES.map((cat) => {
+            const isActive = cat.id === active;
+            return (
+              <button
+                key={cat.id}
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setActive(cat.id)}
+                className="relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors duration-300"
+                style={{ color: isActive ? '#05060d' : undefined }}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="skill-tab"
+                    className="absolute inset-0 rounded-xl"
+                    style={{
+                      background: `linear-gradient(120deg, ${cat.color}, ${cat.color}bb)`,
+                    }}
+                    transition={{ type: 'spring', stiffness: 340, damping: 32 }}
+                  />
+                )}
+                <span
+                  className={`relative z-10 flex items-center gap-2 ${
+                    isActive ? '' : 'text-ink-dim hover:text-ink'
+                  }`}
+                >
+                  <cat.icon size={16} />
+                  <span className="hidden sm:inline">{cat.title}</span>
+                  <span className="sm:hidden">{cat.short}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </Reveal>
+
+      {/* Skill grid */}
+      <AnimatePresence mode="wait">
+        <motion.ul
+          key={category.id}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          {category.skills.map((skill, i) => {
+            const filled = segmentsFor(skill.level);
+            return (
+              <motion.li
+                key={skill.name}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.045 }}
+                className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.022] p-5 transition-all duration-500 hover:-translate-y-1 hover:bg-white/[0.055]"
+              >
+                {/* Hover wash in the category colour */}
+                <span
+                  className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  style={{
+                    background: `radial-gradient(220px circle at 50% 0%, ${category.color}1f, transparent 70%)`,
+                  }}
+                />
+
+                <div className="relative">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <h3 className="font-semibold text-ink">{skill.name}</h3>
+                    <span className="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
+                      {TIER_LABEL(skill.level)}
+                    </span>
+                  </div>
+
+                  {/* Segmented proficiency meter */}
+                  <div className="mt-4 flex gap-1" aria-hidden>
+                    {Array.from({ length: 5 }).map((_, s) => (
+                      <motion.span
+                        key={s}
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{
+                          duration: 0.4,
+                          delay: i * 0.045 + s * 0.06,
+                          ease: [0.16, 1, 0.3, 1],
+                        }}
+                        className="h-1 flex-1 origin-left rounded-full"
+                        style={{
+                          background:
+                            s < filled ? category.color : 'rgba(255,255,255,0.08)',
+                          boxShadow:
+                            s < filled ? `0 0 10px -2px ${category.color}` : 'none',
+                        }}
+                      />
+                    ))}
+                  </div>
+
+                  <p className="mt-4 text-xs leading-relaxed text-ink-faint transition-colors duration-300 group-hover:text-ink-dim">
+                    {skill.note}
+                  </p>
+                </div>
+              </motion.li>
+            );
+          })}
+        </motion.ul>
+      </AnimatePresence>
+    </Section>
+  );
+}
