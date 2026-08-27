@@ -24,7 +24,7 @@ export default function SectionHeader({
       className={`${centered ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'} ${className}`}
     >
       <Reveal>
-        <span className={`kicker ${centered ? 'justify-center' : ''}`}>
+        <span className={`kicker kicker-theme ${centered ? 'justify-center' : ''}`}>
           {kicker}
         </span>
       </Reveal>

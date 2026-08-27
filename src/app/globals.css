@@ -401,3 +401,53 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ==========================================================================
+   Theme-reactive helpers
+   --------------------------------------------------------------------------
+   These read the --t-* variables published by ThemeProvider, so any element
+   using them recolours when the active scroll zone changes theme.
+   ========================================================================== */
+@layer components {
+  .theme-text {
+    color: var(--t-primary);
+    transition: color 0.9s ease;
+  }
+
+  .theme-border {
+    border-color: rgba(var(--t-primary-rgb), 0.35);
+    transition: border-color 0.9s ease;
+  }
+
+  .theme-soft {
+    background: rgba(var(--t-primary-rgb), 0.09);
+    transition: background-color 0.9s ease;
+  }
+
+  .theme-gradient {
+    background: linear-gradient(
+      100deg,
+      var(--t-primary) 0%,
+      var(--t-secondary) 70%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: none;
+  }
+
+  .theme-glow {
+    box-shadow: 0 0 42px -10px rgba(var(--t-primary-rgb), 0.7);
+    transition: box-shadow 0.9s ease;
+  }
+
+  /* Kicker follows the theme rather than the fixed cyan */
+  .kicker-theme {
+    color: var(--t-primary);
+    transition: color 0.9s ease;
+  }
+
+  .kicker-theme::before {
+    background: linear-gradient(90deg, var(--t-primary), transparent);
+  }
+}

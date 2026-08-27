@@ -85,7 +85,7 @@ export default function Contact() {
         title={
           <>
             Let&apos;s build something that{' '}
-            <span className="text-gradient">thinks for itself</span>
+            <span className="theme-gradient">thinks for itself</span>
           </>
         }
         description="Agentic systems, retrieval pipelines, or an AI feature that needs to survive contact with real users — if it is interesting, I want to hear about it."

@@ -1,8 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import {
-  ArrowDown,
   ArrowUpRight,
   Download,
   Github,
@@ -16,10 +16,10 @@ import { scrollToSection } from '@/lib/scroll';
 import { handleResumeAction } from '@/utils/resumeUtils';
 
 const ROLES = [
-  'AI & Agentic Systems Engineer',
-  'Multi-Agent Architectures',
-  'LangGraph · LangChain · RAG',
-  'Mechatronics & Robotics Engineer',
+  'AI Infrastructure Engineer',
+  'Agentic Systems Engineer',
+  'Multi-tenant GPU clusters · vLLM',
+  'LangGraph · RAG · Evals',
 ];
 
 type OrbitTag = {
@@ -35,32 +35,24 @@ type OrbitTag = {
 const ORBIT_TAGS: OrbitTag[] = [
   { label: 'planner', top: '8%', left: '4%', delay: 0 },
   { label: 'retriever', top: '30%', right: '-2%', delay: 0.6 },
-  { label: 'tool-use', bottom: '24%', left: '-4%', delay: 1.2 },
+  { label: 'gpu-pool', bottom: '24%', left: '-4%', delay: 1.2 },
   { label: 'critic', bottom: '6%', right: '8%', delay: 1.8 },
 ];
 
 const SOCIALS = [
-  {
-    label: 'GitHub',
-    icon: Github,
-    href: 'https://github.com/fouadmahmoud281',
-  },
+  { label: 'GitHub', icon: Github, href: 'https://github.com/fouadmahmoud281' },
   {
     label: 'LinkedIn',
     icon: Linkedin,
     href: 'https://www.linkedin.com/in/fouad-mahmoud-2832003/',
   },
-  {
-    label: 'Email',
-    icon: Mail,
-    href: 'mailto:fouadmahmoud281@gmail.com',
-  },
+  { label: 'Email', icon: Mail, href: 'mailto:fouadmahmoud281@gmail.com' },
 ];
 
 const STATS = [
-  { value: '4+', label: 'Production agentic systems' },
+  { value: '5', label: 'Production platforms' },
+  { value: '3', label: 'Concurrent engagements' },
   { value: '6+', label: 'RAG pipelines shipped' },
-  { value: '15+', label: 'Multi-agent workflows' },
   { value: '50+', label: 'Engineers mentored' },
 ];
 
@@ -76,19 +68,32 @@ export default function Hero() {
           {/* Copy                                                        */}
           {/* ---------------------------------------------------------- */}
           <div className="lg:col-span-7">
-            {/* Availability */}
+            {/* Identity + availability */}
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-mint/25 bg-mint/[0.07] px-3.5 py-1.5"
+              className="mb-8 inline-flex items-center gap-3 rounded-full border border-white/[0.09] bg-white/[0.035] py-1.5 pl-1.5 pr-4 backdrop-blur-md"
             >
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-mint animate-pulse-ring" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-mint" />
+              <span className="relative h-8 w-8 overflow-hidden rounded-full ring-1 ring-white/15">
+                <Image
+                  src="/myphoto.jpg"
+                  alt=""
+                  fill
+                  sizes="32px"
+                  priority
+                  className="object-cover"
+                  style={{ filter: 'saturate(0.8) brightness(0.95)' }}
+                />
               </span>
-              <span className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-mint">
-                Open to AI engineering work
+              <span className="flex items-center gap-2">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-mint animate-pulse-ring" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-mint" />
+                </span>
+                <span className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-ink-dim">
+                  Egypt · open to work
+                </span>
               </span>
             </motion.div>
 
@@ -97,7 +102,7 @@ export default function Hero() {
               <span className="block text-ink">
                 <SplitReveal text="FOUAD" immediate delay={0.15} />
               </span>
-              <span className="block text-gradient">
+              <span className="block theme-gradient">
                 <SplitReveal text="MAHMOUD" immediate delay={0.32} />
               </span>
             </h1>
@@ -123,11 +128,11 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 1 }}
               className="mt-8 max-w-xl text-[1.05rem] leading-relaxed text-ink-dim"
             >
-              I build autonomous systems that{' '}
-              <span className="text-ink">plan, retrieve, call tools, and
-              self-correct</span> — orchestrated with LangGraph, grounded in
-              vector search, and shipped behind production APIs at{' '}
-              <span className="text-mint">Obelion.AI</span>.
+              I run the <span className="text-ink">GPU infrastructure</span> at a
+              university datacenter and build the{' '}
+              <span className="text-ink">agentic systems</span> that run on it —
+              multi-tenant Kubernetes and vLLM below, LangGraph agents that plan,
+              retrieve, and self-correct above.
             </motion.p>
 
             {/* Actions */}
@@ -169,7 +174,7 @@ export default function Hero() {
                           : undefined
                       }
                       aria-label={social.label}
-                      className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-ink-dim transition-colors duration-300 hover:border-cyan-glow/50 hover:text-cyan-glow"
+                      className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-ink-dim transition-colors duration-300 hover:text-[var(--t-primary)]"
                     >
                       <social.icon size={18} />
                     </a>
@@ -199,7 +204,12 @@ export default function Hero() {
                   }}
                   className="absolute animate-float rounded-lg border border-white/10 bg-void-900/70 px-2.5 py-1 font-mono text-[0.68rem] tracking-wide text-ink-dim backdrop-blur-md"
                 >
-                  <span className="mr-1.5 text-cyan-glow">◆</span>
+                  <span
+                    className="mr-1.5 transition-colors duration-1000"
+                    style={{ color: 'var(--t-primary)' }}
+                  >
+                    ◆
+                  </span>
                   {tag.label}
                 </motion.span>
               ))}
@@ -221,7 +231,7 @@ export default function Hero() {
               key={stat.label}
               className="bg-void-950/60 px-5 py-6 transition-colors duration-300 hover:bg-void-800/60"
             >
-              <div className="font-display text-3xl font-bold text-gradient">
+              <div className="font-display text-3xl font-bold theme-gradient">
                 {stat.value}
               </div>
               <div className="mt-1.5 text-xs leading-snug text-ink-faint">
@@ -232,25 +242,6 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll cue */}
-      <motion.button
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1.8 }}
-        onClick={() => scrollToSection('#about')}
-        aria-label="Scroll to About"
-        className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-ink-faint transition-colors hover:text-cyan-glow sm:flex"
-      >
-        <span className="font-mono text-[0.65rem] uppercase tracking-[0.24em]">
-          Scroll
-        </span>
-        <motion.span
-          animate={{ y: [0, 7, 0] }}
-          transition={{ duration: 1.9, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <ArrowDown size={15} />
-        </motion.span>
-      </motion.button>
     </section>
   );
 }

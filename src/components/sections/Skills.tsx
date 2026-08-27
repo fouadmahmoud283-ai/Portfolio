@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Bot, Brain, Code, Cpu, Settings } from 'lucide-react';
+import { Bot, Brain, Code, Cpu, Server, Settings } from 'lucide-react';
 import Section from '../ui/Section';
 import SectionHeader from '../ui/SectionHeader';
 import Reveal from '../ui/Reveal';
@@ -19,6 +19,23 @@ type Category = {
 };
 
 const CATEGORIES: Category[] = [
+  {
+    id: 'infra',
+    title: 'Infrastructure & GPU',
+    short: 'Infra',
+    icon: Server,
+    color: '#34d399',
+    skills: [
+      { name: 'Kubernetes', level: 90, note: 'RKE2, CIS-hardened, multi-tenant' },
+      { name: 'NVIDIA GPU Stack', level: 88, note: 'GPU Operator, DCGM, MIG, NVLink' },
+      { name: 'vLLM', level: 88, note: 'Tensor-parallel LLM serving at scale' },
+      { name: 'Terraform', level: 85, note: 'Datacenter provisioning as code' },
+      { name: 'Ansible', level: 85, note: 'Bare-metal configuration and hardening' },
+      { name: 'Cilium / eBPF', level: 80, note: 'Network policy and tenant isolation' },
+      { name: 'Prometheus & Grafana', level: 88, note: 'Telemetry, heatmaps, alerting' },
+      { name: 'Vault & Harbor', level: 80, note: 'Secrets and private registry control' },
+    ],
+  },
   {
     id: 'ai',
     title: 'AI & Agentic Systems',
@@ -122,10 +139,10 @@ export default function Skills() {
         kicker="Capabilities"
         title={
           <>
-            The <span className="text-gradient">toolkit</span>
+            The <span className="theme-gradient">toolkit</span>
           </>
         }
-        description="Depth where it counts for agentic systems, breadth enough to own a feature end to end — from the control loop to the deploy."
+        description="From bare metal and GPU scheduling up through agent orchestration — depth where it counts, breadth enough to own a system end to end."
       />
 
       {/* Category selector */}

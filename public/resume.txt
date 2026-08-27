@@ -1,37 +1,70 @@
 # Fouad Mahmoud - Resume
 
-**AI & Agentic Systems Engineer**  
-Email: fouadmahmoud281@gmail.com  
-GitHub: https://github.com/fouadmahmoud281  
-Portfolio: https://fouadmahmoud-portfolio.vercel.app
+**AI Infrastructure & Agentic Systems Engineer**
+Tanta, Gharbia, Egypt
+Email: fouadmahmoud281@gmail.com
+Phone: +20 106 624 8326
+Site: https://www.fouadmahmoud.tech
+GitHub: https://github.com/fouadmahmoud281
 
 ## Professional Summary
-Innovative AI & Agentic Systems Engineer with expertise in building autonomous AI systems using LangChain, LangGraph, and cutting-edge LLMs. Currently developing production-level applications at Syntera Marketplace while pursuing studies in Mechatronics & Robotics Engineering.
+AI engineer working at both ends of the stack: operating multi-tenant GPU
+infrastructure for LLM inference, and building the agentic systems that run on
+top of it. Experienced in Kubernetes-based GPU cluster management, vLLM serving,
+and LangGraph multi-agent architectures taken from prototype to production, with
+a background in Mechatronics & Robotics.
 
 ## Experience
 
-### AI & Agentic Systems Engineer | Syntera Marketplace (Current)
-- Lead engineer on Syntera Code Generation & Marketplace products
-- Architect multi-agent AI systems using LangChain & LangGraph
-- Build autonomous workflows with LLMs for complex tasks
-- Develop data pipelines and vector database solutions
+### AI Infrastructure Engineer | Princess Nourah bint Abdulrahman University - Datacenter
+Jan 2026 - Present | Riyadh, Saudi Arabia
+- Operate multi-tenant GPU clusters with namespace-per-tenant isolation, resource quotas, and RBAC
+- Provision datacenter infrastructure as code with Terraform and Ansible, from bare metal through CIS-hardened Kubernetes
+- Serve LLM inference on vLLM with tensor parallelism behind an OpenAI-compatible API
+- Instrument the estate with Prometheus, DCGM, and Grafana - utilisation heatmaps, NVLink health, thermal alerting
+- Enforce in-country data residency, secrets management, and admission policy across every workload
 
-### AI & Data Science Instructor (1.5 Years)
-- Taught fundamentals of robotics, AI, and data science
-- Designed curriculum and hands-on projects
-- Mentored 50+ students on real-world AI applications
-- Conducted workshops on Python, ML, and AI ethics
+### AI Consultant | Sphinx Solutions
+Aug 2025 - Present | United Kingdom (Remote)
+- Architecture review and feasibility assessment for LLM and agentic initiatives
+- Retrieval strategy and evaluation design
+- Cost and model-routing guidance, plus technical mentoring for teams adopting agentic patterns
+
+### AI & Agentic Systems Engineer | Obelion.AI
+May 2024 - Present | Remote
+- Lead engineer across the Syntera suite: GPU control plane, AI marketplace, conversational software-engineering studio
+- Architect LangGraph multi-agent systems with typed state and explicit control flow
+- Own retrieval end to end - hybrid dense/sparse search over Qdrant, reranking, groundedness evaluation
+- Ship FastAPI services and Next.js surfaces, instrumented with tracing, cost accounting, and regression evals
+
+### Scrum Master | OPEX - Cloud Gate
+Jan 2024 - May 2024 | Hybrid
+- Facilitated agile development of Cloud Gate Marketplace, a multi-cloud automation platform
+- Coordinated cross-functional teams and streamlined sprint planning and delivery
+
+### AI & Data Science Instructor | Techy School
+Feb 2022 - Dec 2023 | Hybrid
+- Taught applied AI, LLMs, and data science fundamentals through hands-on projects
+- Developed structured curricula on Python and ML, mentoring 50+ students
 
 ## Education
-**Mechatronics & Robotics Engineering** (Current)
-- Focus on intelligent systems and AI-hardware integration
+**Bachelor of Engineering in Mechatronics & Robotics** | Tanta University
+Sep 2020 - May 2026 | Tanta, Egypt
+- Relevant coursework in Computer Vision, Programming, and Autonomous Agents
 
 ## Technical Skills
-- **AI/ML**: LangChain, LangGraph, LangSmith, OpenAI API, Hugging Face
-- **Programming**: Python, JavaScript/TypeScript, FastAPI, Flask
-- **Tools**: Docker, AWS, MongoDB, Redis, Git, MLOps
-- **Specializations**: Multi-agent systems, Vector databases, Agentic AI
+- **AI & Agents**: LangChain, LangGraph, LangSmith, Langfuse, OpenAI API, RAG, multi-agent architecture, evaluation
+- **Infrastructure**: Kubernetes (RKE2), Rancher, Cilium/eBPF, NVIDIA GPU Operator, DCGM, MIG, vLLM, Terraform, Ansible, Prometheus, Grafana, Vault, Harbor
+- **Backend & Web**: Python, FastAPI, Flask, TypeScript, Next.js, React, Docker, CI/CD
+- **Data & ML**: Qdrant, PostgreSQL, MongoDB, Redis, MinIO, PyTorch, Scikit-learn, Streamlit
 
 ## Featured Projects
-1. **Syntera Code Generation** - Production agentic system for autonomous software development
-2. **Syntera Marketplace** - AI/ML tools marketplace with intelligent search and deployment
+1. **Syntera Engine** - Multi-datacenter GPU management platform with multi-tenant isolation and vLLM inference orchestration on RKE2/Rancher
+2. **Syntera Web (Studio)** - Conversational AI software engineering platform automating the SDLC via LangGraph agents
+3. **Syntera Marketplace** - AI marketplace and control plane for LLM endpoints, vector databases, and agentic workflows
+4. **Bayan** - Bilingual (AR/EN) AI librarian with LangGraph retrieval over Qdrant hybrid search
+5. **Inpakt** - Bilingual social impact tracking platform with agentic setup and OCR document analysis
+
+## Additional Information
+- **Languages**: English, Arabic, German
+- **Interests**: Agentic AI systems, AI infrastructure at scale, entrepreneurial AI solutions

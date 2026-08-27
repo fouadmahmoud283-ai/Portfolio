@@ -78,7 +78,7 @@ export default function Pipeline() {
         kicker="How it works"
         title={
           <>
-            The <span className="text-gradient">agent loop</span> I build
+            The <span className="theme-gradient">agent loop</span> I build
             against
           </>
         }
@@ -163,7 +163,7 @@ export default function Pipeline() {
             {GUARANTEES.map((item, i) => (
               <Reveal key={item.k} delay={0.16 + i * 0.07}>
                 <div className="bg-white/[0.025] px-5 py-4 transition-colors duration-300 hover:bg-white/[0.06]">
-                  <dt className="font-mono text-[0.7rem] uppercase tracking-[0.16em] text-cyan-glow">
+                  <dt className="font-mono text-[0.7rem] uppercase tracking-[0.16em] theme-text">
                     {item.k}
                   </dt>
                   <dd className="mt-1.5 text-sm text-ink-dim">{item.v}</dd>

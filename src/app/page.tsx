@@ -1,3 +1,5 @@
+import ThemeProvider from '@/components/theme/ThemeProvider';
+import ThemeZone from '@/components/theme/ThemeZone';
 import Backdrop from '@/components/three/Backdrop';
 import Grain from '@/components/ui/Grain';
 import Cursor from '@/components/ui/Cursor';
@@ -17,33 +19,51 @@ import Contact from '@/components/sections/Contact';
 export default function Home() {
   return (
     <MotionProvider>
-      {/* Ambient layers */}
-      <Backdrop />
-      <Grain />
-      <Cursor />
-      <SmoothScroll />
-      <ScrollProgress />
+      <ThemeProvider>
+        {/* Ambient layers */}
+        <Backdrop />
+        <Grain />
+        <Cursor />
+        <SmoothScroll />
+        <ScrollProgress />
 
-      <a
-        href="#about"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[90] focus:rounded-lg focus:bg-void-800 focus:px-4 focus:py-2 focus:text-ink"
-      >
-        Skip to content
-      </a>
+        <a
+          href="#about"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[90] focus:rounded-lg focus:bg-void-800 focus:px-4 focus:py-2 focus:text-ink"
+        >
+          Skip to content
+        </a>
 
-      <Navigation />
+        <Navigation />
 
-      <main className="relative">
-        <Hero />
-        <About />
-        <Pipeline />
-        <Skills />
-        <Projects />
-        <Experience />
-        <Contact />
-      </main>
+        <main className="relative">
+          <Hero />
 
-      <Footer />
+          {/* Every section declares its own theme, so the palette is never
+              inherited from whichever zone happened to scroll past last. */}
+          <ThemeZone theme="core">
+            <About />
+          </ThemeZone>
+
+          <ThemeZone theme="agentic">
+            <Pipeline />
+          </ThemeZone>
+
+          <ThemeZone theme="core">
+            <Skills />
+          </ThemeZone>
+
+          {/* Projects and Experience theme themselves per card. */}
+          <Projects />
+          <Experience />
+
+          <ThemeZone theme="core">
+            <Contact />
+          </ThemeZone>
+        </main>
+
+        <Footer />
+      </ThemeProvider>
     </MotionProvider>
   );
 }

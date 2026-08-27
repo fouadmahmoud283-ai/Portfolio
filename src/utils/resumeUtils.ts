@@ -2,7 +2,7 @@
  * Utility functions for handling resume download and preview functionality
  */
 
-export const RESUME_FILENAME = "Fouad Resume (1).pdf";
+export const RESUME_FILENAME = 'Fouad-Mahmoud-Resume.pdf';
 export const RESUME_PATH = `/${RESUME_FILENAME}`;
 
 /**
@@ -11,7 +11,7 @@ export const RESUME_PATH = `/${RESUME_FILENAME}`;
 export const downloadResume = () => {
   const link = document.createElement('a');
   link.href = RESUME_PATH;
-  link.download = 'Fouad_Mahmoud_Resume.pdf'; // Clean filename for download
+  link.download = 'Fouad-Mahmoud-Resume.pdf';
   link.target = '_blank'; // Open in new tab as fallback
   document.body.appendChild(link);
   link.click();

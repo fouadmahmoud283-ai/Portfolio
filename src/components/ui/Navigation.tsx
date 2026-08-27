@@ -47,14 +47,33 @@ export default function Navigation() {
 
     if (!sections.length) return;
 
+    // Ratios are accumulated across callbacks rather than read from each batch
+    // in isolation: a callback only carries the sections that just crossed a
+    // threshold, so ranking within one batch can crown a section that is
+    // actually leaving over the one now filling the band.
+    const ratios = new Map<string, number>();
+
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) setActive(visible.target.id);
+        entries.forEach((entry) => {
+          ratios.set(
+            entry.target.id,
+            entry.isIntersecting ? entry.intersectionRatio : 0
+          );
+        });
+
+        let bestId = '';
+        let bestRatio = 0;
+        ratios.forEach((ratio, id) => {
+          if (ratio > bestRatio) {
+            bestRatio = ratio;
+            bestId = id;
+          }
+        });
+
+        if (bestId) setActive(bestId);
       },
-      { rootMargin: '-25% 0px -60% 0px', threshold: [0.05, 0.25, 0.5] }
+      { rootMargin: '-25% 0px -60% 0px', threshold: [0, 0.05, 0.25, 0.5, 0.75, 1] }
     );
 
     sections.forEach((section) => observer.observe(section));

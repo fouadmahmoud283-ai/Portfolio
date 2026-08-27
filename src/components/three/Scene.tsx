@@ -5,37 +5,66 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { PerformanceMonitor } from '@react-three/drei';
 import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing';
 import NeuralCore from './NeuralCore';
+import DataCenterScene from './DataCenterScene';
 import ParticleField from './ParticleField';
 import { startViewportTracking } from '@/lib/viewport';
 import type { MotionTier } from '@/hooks/useMotionPrefs';
+import type { ThemeDef } from '@/lib/themes';
 
 /**
  * Anchors the neural graph to the right-hand column on wide screens and
  * centres it behind the copy on narrow ones, in world units so it tracks the
  * camera rather than guessing at pixels.
  */
-function PlacedCore({ lite }: { lite: boolean }) {
+function PlacedCore({
+  lite,
+  active,
+  theme,
+}: {
+  lite: boolean;
+  active: boolean;
+  theme: ThemeDef;
+}) {
   const width = useThree((state) => state.viewport.width);
   const isNarrow = width < 9;
 
-  const x = isNarrow ? 0 : width * 0.23;
-  const scale = isNarrow ? 0.82 : 1;
-
   return (
-    <group position={[x, isNarrow ? 0.6 : 0, 0]} scale={scale}>
+    <group
+      // Beside the copy on wide screens; lifted behind the headline and
+      // faded well back on narrow ones, where it would otherwise sit on top
+      // of the body text.
+      position={[isNarrow ? 0 : width * 0.23, isNarrow ? 1.9 : 0, 0]}
+      scale={isNarrow ? 0.7 : 1}
+    >
       <NeuralCore
+        active={active}
+        primary={theme.primary}
+        secondary={theme.secondary}
+        accent={theme.accent}
         nodeCount={lite ? 70 : 130}
         signalCount={lite ? 22 : 46}
+        intensity={isNarrow ? 0.42 : 1}
       />
     </group>
   );
 }
 
-export default function Scene({ tier }: { tier: Exclude<MotionTier, 'none'> }) {
+export default function Scene({
+  tier,
+  theme,
+}: {
+  tier: Exclude<MotionTier, 'none'>;
+  theme: ThemeDef;
+}) {
   const lite = tier === 'lite';
   const [dpr, setDpr] = useState(lite ? 1 : 1.5);
 
   useEffect(() => startViewportTracking(), []);
+
+  // Both scenes stay mounted and crossfade; whichever is inactive fades to
+  // zero and stops drawing, which is cheaper than tearing down GPU buffers on
+  // every scroll-driven theme change.
+  const showDatacenter = theme.scene === 'datacenter';
 
   return (
     <Canvas
@@ -59,7 +88,9 @@ export default function Scene({ tier }: { tier: Exclude<MotionTier, 'none'> }) {
 
       <Suspense fallback={null}>
         <ParticleField count={lite ? 550 : 1400} />
-        <PlacedCore lite={lite} />
+
+        <PlacedCore lite={lite} active={!showDatacenter} theme={theme} />
+        <DataCenterScene active={showDatacenter} lite={lite} />
 
         {!lite && (
           <EffectComposer enableNormalPass={false} multisampling={0}>
